@@ -1,0 +1,12 @@
+{
+    "name": "arcobaleno/module-extension",
+    "description": "none",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bermlida",
+            "email": "fir4268@gmail.com"
+        }
+    ],
+    "require": {}
+}
