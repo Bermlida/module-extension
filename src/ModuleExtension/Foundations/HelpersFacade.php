@@ -7,6 +7,7 @@ use RuntimeException;
 
 abstract class HelpersFacade
 {
+/*
     private $storage;
 
     public function __construct($storage = null, array $processor = [])
@@ -16,20 +17,20 @@ abstract class HelpersFacade
             $this->__call($function, (array)$arguments);
         }
     }
-
-    protected static function resolveHelperName($name)
+*/
+    protected static function resolveHelperNamespace()
     {
         $facade_name = (new ReflectionClass(new static))->getName();
-        $namespace = str_replace(["Facades", "Facade"], ["Helpers", ""], $facade_name);
-        return $namespace . '\\' . $name;
+        return str_replace(["Facades", "Facade"], ["Helpers", ""], $facade_name);
     }
 
     protected static function failedCall($name, $arguments)
     {
-        $params = print_r($arguments, true);
-        return new RuntimeException('Helper function call failed. function name: ' . $name . ', params: ' . $params);
+        $error_message = 'Helper function call failed. function name: ' . $name;
+        $error_message .= ', params: ' . print_r($arguments, true);
+        return new RuntimeException($error_message);
     }
-
+/*
     public function __get($name) 
     {
         if ($name == "result") {
@@ -52,13 +53,14 @@ abstract class HelpersFacade
         }
         throw static::failedCall($name, $arguments);
     }
-
+*/
     public static function __callStatic($name, $arguments) 
     {
-        $name = static::resolveHelperName($name);
-        if (function_exists($name)) {
-            return call_user_func_array($name, $arguments);
+        $helper_namespace = static::resolveHelperNamespace($name);
+        $helper_name = $helper_namespace . '\\' . $name;        
+        if (function_exists($helper_name)) {
+            return call_user_func_array($helper_name, $arguments);
         }
-        throw static::failedCall($name, $arguments);
+        throw static::failedCall($helper_name, $arguments);
     }
 }
