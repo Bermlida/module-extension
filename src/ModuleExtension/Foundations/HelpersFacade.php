@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Foundations;
+namespace ModuleExtension\Foundations;
 
 use ReflectionClass;
 use RuntimeException;
