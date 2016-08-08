@@ -5,7 +5,7 @@ namespace ModuleExtension\Foundations;
 use ReflectionClass;
 use RuntimeException;
 
-abstract class HelpersFacade
+abstract class Service
 {
 /*
     private $storage;
