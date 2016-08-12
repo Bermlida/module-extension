@@ -2,43 +2,59 @@
 
 namespace ModuleExtension\Foundations;
 
+use Closure;
 use ReflectionClass;
+use ReflectionMethod;
 use RuntimeException;
 
 abstract class Service
 {
-/*
-    private $storage;
 
-    public function __construct($storage = null, array $processor = [])
+    protected $modules = [];
+
+    protected $methods = [];
+
+    protected function method($modules)
     {
-        $this->storage = $storage;
-        foreach ($processor as $function => $arguments) {
-            $this->__call($function, (array)$arguments);
+        return [];
+    }
+
+    public function addModule(string $name, $module)
+    {
+        //$facade_name = (new ReflectionClass(new static))->getName();
+        //return str_replace(["Facades", "Facade"], ["Helpers", ""], $facade_name);
+        //$this->modules = array_merge($this->modules, $modules);
+        $this->modules[$name] = $module;
+    }
+
+    public function removeModule(string $name)
+    {
+        if (isset($this->modules[$name])) {
+            unset($this->modules[$name]);
         }
-    }
-*/
-    protected static function resolveHelperNamespace()
-    {
-        $facade_name = (new ReflectionClass(new static))->getName();
-        return str_replace(["Facades", "Facade"], ["Helpers", ""], $facade_name);
+        //$error_message = 'Helper function call failed. function name: ' . $name;
+        //$error_message .= ', params: ' . print_r($arguments, true);
+        //return new RuntimeException($error_message);
     }
 
-    protected static function failedCall($name, $arguments)
+    protected function addMethod($name, $method) 
     {
-        $error_message = 'Helper function call failed. function name: ' . $name;
-        $error_message .= ', params: ' . print_r($arguments, true);
-        return new RuntimeException($error_message);
+        //$this->$method_name = $callback;
+        //if ($name == "result") {
+        //    return $this->storage;
+        //}
+        //return $this->modules;
+    }
+
+    public function __call($name, $arguments) 
+    {
+        $available_methods = $this->methods($this->modules);
+        if (isset($available_methods[$name])) {
+            return call_user_func_array($available_methods[$name], $arguments);
+        }
+        throw static::failedCall($helper_name, $arguments);
     }
 /*
-    public function __get($name) 
-    {
-        if ($name == "result") {
-            return $this->storage;
-        }
-        return null;
-    }
-
     public function __call($name, $arguments) 
     {
         $name = $this->resolveHelperName($name);
@@ -54,13 +70,4 @@ abstract class Service
         throw static::failedCall($name, $arguments);
     }
 */
-    public static function __callStatic($name, $arguments) 
-    {
-        $helper_namespace = static::resolveHelperNamespace($name);
-        $helper_name = $helper_namespace . '\\' . $name;        
-        if (function_exists($helper_name)) {
-            return call_user_func_array($helper_name, $arguments);
-        }
-        throw static::failedCall($helper_name, $arguments);
-    }
 }
