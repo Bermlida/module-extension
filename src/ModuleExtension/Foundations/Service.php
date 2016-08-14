@@ -2,72 +2,51 @@
 
 namespace ModuleExtension\Foundations;
 
-use Closure;
-use ReflectionClass;
-use ReflectionMethod;
+
+use ModuleExtension\Constraints\ServiceConstraint;
+use ModuleExtension\Features\ModuleAccessFeature;
+use ModuleExtension\Features\MethodAccessFeature;
 use RuntimeException;
 
-abstract class Service
+abstract class Service implements ArrayAccess, ServiceConstraint
 {
+    use ModuleAccessFeature, MethodAccessFeature;
 
-    protected $modules = [];
-
-    protected $methods = [];
-
-    protected function method($modules)
+    public function offsetGet($offset)
     {
-        return [];
+        throw new RuntimeException('');
     }
 
-    public function addModule(string $name, $module)
+    public function offsetExists($offset)
     {
-        //$facade_name = (new ReflectionClass(new static))->getName();
-        //return str_replace(["Facades", "Facade"], ["Helpers", ""], $facade_name);
-        //$this->modules = array_merge($this->modules, $modules);
-        $this->modules[$name] = $module;
+        return $this->existsModule($offset);
     }
 
-    public function removeModule(string $name)
+    public function offsetSet($offset, $value) 
     {
-        if (isset($this->modules[$name])) {
-            unset($this->modules[$name]);
-        }
-        //$error_message = 'Helper function call failed. function name: ' . $name;
-        //$error_message .= ', params: ' . print_r($arguments, true);
-        //return new RuntimeException($error_message);
+        $this->setModule($offset, $value);
     }
 
-    protected function addMethod($name, $method) 
+    public function offsetUnset($offset) 
     {
-        //$this->$method_name = $callback;
-        //if ($name == "result") {
-        //    return $this->storage;
-        //}
-        //return $this->modules;
+        $this->unsetModule($offset);
     }
 
     public function __call($name, $arguments) 
     {
-        $available_methods = $this->methods($this->modules);
-        if (isset($available_methods[$name])) {
-            return call_user_func_array($available_methods[$name], $arguments);
-        }
-        throw static::failedCall($helper_name, $arguments);
-    }
-/*
-    public function __call($name, $arguments) 
-    {
-        $name = $this->resolveHelperName($name);
-        if (function_exists($name)) {
-            if (!is_null($this->storage)) {
-                array_unshift($arguments, $this->storage);
+        if (isset($this->methods[$name])) {
+            $callback = $this->methods[$name]['callback'];
+            if (isset($this->methods[$name]['module'])) {
+                $use_module = $this->methods[$name]['module'];
+                if (is_array($use_module)) {
+                    $use_module = array_merge(array_flip($use_module), $this->modules);
+                } else {
+                    $use_module = $this->modules[$use_module];
+                }
+                $arguments[] = $use_module;
             }
-            
-            $return = call_user_func_array($name, $arguments);
-            $this->storage = $return ?? $this->storage;
-            return $this;
+            return call_user_func_array($callback, $arguments);
         }
-        throw static::failedCall($name, $arguments);
+        throw new RuntimeException('');
     }
-*/
 }
