@@ -2,14 +2,13 @@
 
 namespace ModuleExtension\Foundations;
 
+use ModuleExtension\Features\ScriptAccessFeature;
+
 abstract class Library
 {
+    use ScriptAccessFeature;
+/*
     protected $script_result = null;
-
-    public function script()
-    {
-        return [];
-    }
 
     protected function getScriptResult()
     {
@@ -25,12 +24,12 @@ abstract class Library
 
     protected function resetScriptResult()
     {
-        $this->script_result = null;
+        $this->storage = ['' => '', '' => 12345];
     }
-
+*/
     public function executeScript($script = "default", array $params = [])
     {
-        $available_script = $this->script();
+        $available_script = $this->scripts;
         if ((is_string($script) || is_array($script)) && !empty($script)) {
             $script = is_string($script) && isset($available_script[$script])
                          ? $available_script[$script]
@@ -38,32 +37,43 @@ abstract class Library
             
             foreach ($script as $command_key => $command) {
                 if (is_numeric(key($command))) {
-                    $command_function = current($command);
-                    $command_params = $params[$command_key] ?? [];
+                    $method = current($command);
+                    $arguments = $params[$command_key] ?? [];
                 } else {
-                    $command_function = key($command);
-                    $command_params = $params[$command_key] ?? (array)(current($command));
+                    $method = key($command);
+                    $arguments = $params[$command_key] ?? (array)(current($command));
                 }
                 
-                switch (count($command_params)) {
+                switch (count($arguments)) {
                     case 0:
-                        $this->$command_function();
+                        $this->$method();
+                        break;
                     case 1:
-                        $this->$command_function($command_params[0]);
+                        $this->$method($arguments[0]);
+                        break;
                     case 2:
-                        $this->$command_function($command_params[0], $command_params[1]);
+                        $this->$method($arguments[0], $arguments[1]);
+                        break;
                     case 3:
-                        $this->$command_function($command_params[0], $command_params[1], $command_params[2]);
+                        $this->$method($arguments[0], $arguments[1], $arguments[2]);
+                        break;
+                    case 4:
+                        $this->$method($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+                        break;
+                    case 5:
+                        $this->$method($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
+                        break;
                     default:
-                        call_user_func_array([$this, $command_function], $command_params);
+                        call_user_func_array([$this, $method], $arguments);
+                        break;
                 }
-            }
-
-            if (!is_null($this->script_result)) {
-                $temp_result = $this->script_result;
-                $this->script_result = null;
-                return $temp_result;
             }
         }
     }
+/*
+    public function script()
+    {
+        return [];
+    }
+*/
 }

@@ -17,7 +17,7 @@ abstract class Facade extends BaseFacade
         ];
     }
 
-    public static function getFacadeInstance()
+    protected static function getFacadeInstance()
     {
         $facade_setting = $this->getFacadeSetting();
         if ($facade_setting['type'] === '') {
