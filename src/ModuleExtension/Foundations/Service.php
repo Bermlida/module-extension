@@ -2,11 +2,10 @@
 
 namespace ModuleExtension\Foundations;
 
-
+use RuntimeException;
 use ModuleExtension\Constraints\ServiceConstraint;
 use ModuleExtension\Features\ModuleAccessFeature;
 use ModuleExtension\Features\MethodAccessFeature;
-use RuntimeException;
 
 abstract class Service implements ArrayAccess, ServiceConstraint
 {
@@ -19,17 +18,44 @@ abstract class Service implements ArrayAccess, ServiceConstraint
 
     public function offsetExists($offset)
     {
-        return $this->existsModule($offset);
+        $method = $this->resolveArrayMethod($offset);
+        $method_name = "exists" . ($method->type == "Module" ? $method->type : $method->type . "Bind");
+        return $this->$method_name($method->offset);
     }
 
     public function offsetSet($offset, $value) 
     {
-        $this->setModule($offset, $value);
+        $method = $this->resolveArrayMethod($offset);
+        $method_name = ($method->type == "Module" ? "set" : "bind") . $method->type;
+        $this->$method_name($method->offset, $value);
     }
 
     public function offsetUnset($offset) 
     {
-        $this->unsetModule($offset);
+        $method = $this->resolveArrayMethod($offset);
+        $method_name = ($method->type == "Module" ? "unset" : "unbind") . $method->type;
+        $this->$method_name($method->offset);
+    }
+
+    protected function resolveArrayMethod($offset)
+    {
+        if (strpos($offset, '.') > 0) {
+            $layers = explode($offset);
+            switch (ucfirst($layers[0])) {
+                case "Modules":
+                    $method['type'] = 'Module';
+                    break;
+                case "Methods":
+                    $method['type'] = 'Method';
+                    break;
+                default:
+                    throw new RuntimeException('');
+            }
+            $method['offset'] = $layers[1];
+        } else {-
+            $method = ['type' => 'Module', 'offset' => $offset];
+        }
+        return (object)($method);
     }
 
     public function __call($name, $arguments) 
@@ -37,13 +63,13 @@ abstract class Service implements ArrayAccess, ServiceConstraint
         if (isset($this->methods[$name])) {
             $callback = $this->methods[$name]['callback'];
             if (isset($this->methods[$name]['module'])) {
-                $use_module = $this->methods[$name]['module'];
-                if (is_array($use_module)) {
-                    $use_module = array_merge(array_flip($use_module), $this->modules);
+                $module = $this->methods[$name]['module'];
+                if (is_array($module)) {
+                    $module = array_merge(array_flip($module), $this->modules);
                 } else {
-                    $use_module = $this->modules[$use_module];
+                    $module = $this->modules[$module];
                 }
-                $arguments[] = $use_module;
+                $arguments[] = $module;
             }
             return call_user_func_array($callback, $arguments);
         }
