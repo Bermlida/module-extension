@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models\Facades;
-ServiceProvider $ddd;
+
 use Illuminate\Mail\Mailer;
 use Illuminate\Mail\Message;
 use App\Repositories\UserRepository;

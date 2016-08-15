@@ -27,7 +27,11 @@ abstract class Service implements ArrayAccess, ServiceConstraint
     {
         $method = $this->resolveArrayMethod($offset);
         $method_name = ($method->type == "Module" ? "set" : "bind") . $method->type;
-        $this->$method_name($method->offset, $value);
+        if (is_array($value)) {
+            $this->$method_name($method->offset, $value[0], $value[1]);
+        } else {
+            $this->$method_name($method->offset, $value);
+        }
     }
 
     public function offsetUnset($offset) 
