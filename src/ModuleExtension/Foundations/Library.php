@@ -7,26 +7,7 @@ use ModuleExtension\Features\ScriptAccessFeature;
 abstract class Library
 {
     use ScriptAccessFeature;
-/*
-    protected $script_result = null;
-
-    protected function getScriptResult()
-    {
-        return $this->script_result;
-    }
-
-    protected function setScriptResult($result)
-    {
-        if (!is_null($result)) {
-            $this->script_result = $result;
-        }
-    }
-
-    protected function resetScriptResult()
-    {
-        $this->storage = ['' => '', '' => 12345];
-    }
-*/
+    
     public function executeScript($script = "default", array $params = [])
     {
         $available_script = $this->scripts;
@@ -70,10 +51,4 @@ abstract class Library
             }
         }
     }
-/*
-    public function script()
-    {
-        return [];
-    }
-*/
 }

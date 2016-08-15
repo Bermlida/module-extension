@@ -2,10 +2,6 @@
 
 namespace ModuleExtension\Features;
 
-use Illuminate\Mail\Mailer;
-use Illuminate\Mail\Message;
-use App\Repositories\UserRepository;
-
 trait ScriptAccessFeature
 {    
     protected $scripts = [];
