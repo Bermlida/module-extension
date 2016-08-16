@@ -2,10 +2,9 @@
 
 namespace App\Models\Facades;
 
-use Illuminate\Mail\Mailer;
-use Illuminate\Mail\Message;
 use App\Repositories\UserRepository;
 use \Illuminate\Support\Facades\Facade as BaseFacade;
+use ModuleExtension\Foundations\EntityProxy;
 
 class Facade extends BaseFacade
 {

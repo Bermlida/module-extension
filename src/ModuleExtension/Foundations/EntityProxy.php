@@ -1,10 +1,11 @@
 <?php
 
-namespace ModuleExtension\Features;
+namespace ModuleExtension\Foundations;
 
 use ModuleExtension\Constraints\EntityConstraint;
+use ModuleExtension\Constraints\EntityProxyConstraint;
 
-trait RepositoryFeature
+abstract class EntityProxy implements EntityProxyConstraint
 {
     protected $entity;
 
@@ -36,5 +37,10 @@ trait RepositoryFeature
     public function read()
     {
         return $this->entity->read();
+    }
+
+    protected function callInvisible()
+    {
+        throw new RuntimeException('');
     }
 }
