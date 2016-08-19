@@ -8,30 +8,13 @@ use ModuleExtension\Foundations\EntityProxy;
 
 class Facade extends BaseFacade
 {
-/*
-    protected $script_result = null;
 
-    protected function getScriptResult()
-    {
-        return $this->script_result;
-    }
-
-    protected function setScriptResult($result)
-    {
-        if (!is_null($result)) {
-            $this->script_result = $result;
-        }
-    }
-
-    protected function resetScriptResult()
-    {
-        $this->storage = ['' => '', '' => 12345];
-    }
-*/
-/*
-    public function script()
-    {
-        return [];
-    }
-*/
+    protected $script_result = [
+        [1,2,3.5,[]],
+        [1],
+        [[]],
+        123456,
+        [123,456]
+    ];
+    $this->scripts = $available_script;
 }
