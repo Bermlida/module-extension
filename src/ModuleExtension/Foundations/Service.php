@@ -45,11 +45,11 @@ abstract class Service implements ArrayAccess, ServiceConstraint
     {
         if (strpos($offset, '.') > 0) {
             $layers = explode($offset);
-            switch (ucfirst($layers[0])) {
-                case "Modules":
+            switch (strtolower($layers[0])) {
+                case "modules":
                     $method['type'] = 'Module';
                     break;
-                case "Methods":
+                case "methods":
                     $method['type'] = 'Method';
                     break;
                 default:
