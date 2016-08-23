@@ -9,38 +9,7 @@ use RuntimeException;
 abstract class Repository
 {
     protected $entity_proxy = [];
-/*
-    public function __construct()
-    {
-        $class = new ReflectionClass($this);
-        $properties = $class->getProperties(ReflectionProperty::IS_PRIVATE);
-        
-        foreach ($properties as $property) {
-            $property->setAccessible(true);
-            $property_name = $property->getName();
-            $property_value = $property->getValue($this);
 
-            if (!is_string($property_value)) {
-                $segments = explode("_", $property_name);
-                if (count($segments) > 1) {
-                    $callback = function ($name) {
-                        return ucfirst(strtolower($name));
-                    };
-                }  else {
-                    $callback = "ucfirst";
-                }
-                $property_value = implode(array_map($callback, $segments));
-            }
-
-            $entity_constraint = "ModuleExtension\\Constraints\\EntityConstraint";
-            $namespace = (strpos($property_value, "\\") === false) ? $class->getNamespaceName() . "\\Entities\\" : "";
-            $property_value = $namespace . $property_value;
-            if ((new ReflectionClass($property_value))->implementsInterface($entity_constraint)) {
-                $property->setValue($this, new $property_value);
-            }
-        }
-    }
-*/
     public function entity($entity, $entity_proxy = '')
     {
         if (!isset($this->entity_proxy[$entity])) {
