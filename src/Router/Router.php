@@ -49,6 +49,3 @@ class Router extends Authenticatable
         return null;
     }
 }
-
-/* End of file User.php */
-/* Location: .//home/tkb-user/projects/laravel/app/Repositories/Entities/User.php */
