@@ -7,7 +7,7 @@ use ReflectionFunction;
 
 class Router extends Authenticatable
 {
-    protected $namespace = '/';
+    //protected $namespace = '/';
     protected $uri_paths = [];
     protected $http_methods = [];
     protected $callbacks = [];
