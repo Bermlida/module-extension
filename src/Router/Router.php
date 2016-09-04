@@ -2,18 +2,23 @@
 
 namespace Vista\Router;
 
-//use ReflectionClass;
+use RuntimeException;
 use ReflectionMethod;
 use ReflectionFunction;
 
 class Router extends Authenticatable
 {
-    //protected $namespace = '/';
-    protected $uri_rules = [];
+    protected $root = '';
+    protected $rules = [];
     protected $callbacks = [];
-    protected $http_methods = [];
+    // protected $http_methods = [];
 
-    public function dispatch($uri_path)
+    public function setRoot(string $namespace)
+    {
+        $this->root = $namespace;
+    }
+
+    public function dispatch()
     {
         $uri = parse_url($_SERVER['REQUEST_URI']);
 
@@ -110,7 +115,7 @@ class Router extends Authenticatable
         
         if (count($parameters) > 0) {
             $reflector = $parameters[0]->getClass();
-            $interface_constraint = "";
+            $interface_constraint = '';
             
             if (!is_null($reflector) && $reflector->implementsInterface($interface_constraint)) {
                 $object = new $reflector->getName();
@@ -129,5 +134,26 @@ class Router extends Authenticatable
         }
 
         return $arguments ?? [];
+    }
+
+    public function __call($method, $arguments)
+    {
+        $valid_verb = ["post", "get", "put", "delete", "header", "patch", "options"];
+        
+        if (in_array($method, $valid_verb)) {
+            $method = strtoupper($method);
+            $keys = array_keys($this->rules, $arguments[0]);
+
+            if (count($keys) > 0) {
+                $key = current($keys);
+                $this->callbacks[$key][$method] = $arguments[1];
+            } else {
+                $callbacks[$method] = $arguments[1];
+                $this->rules[] = $arguments[0];
+                $this->callbacks[] = $callbacks;
+            }
+        } else {
+            throw new RuntimeException('');
+        }
     }
 }
