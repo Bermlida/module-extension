@@ -6,22 +6,61 @@ use RuntimeException;
 
 trait RegisterRuleFeature extends Model
 {
-    public function rule(string $rule)
+
+    public function rule(string $rule, $callbacks)
     {
-        $keys = array_keys($this->rules, $rule);
-        if (count($keys) === 0) {
-            $this->rules[] = $rule;
+        $this->cache_rule = $rule;
+        $this->rules[$rule] = $this->rules[$rule] ?? [];
+
+        if (is_array($callbacks)) {
+            foreach ($callbacks as $method => $processor) {
+                if (is_array($processor) && isset($processor['options'])) {
+                    $this->callback($method, $processor[0])->option($processor['options']);
+                } else {
+                    $this->callback($method, $processor);
+                }
+            }
+        } elseif (is_callable($callbacks)) {
+            $callbacks($this);
         }
+
+        return $this;
     }
 
-    // public function registerCallback(string $method, $callback)
-    // {
-    //     if (is_callable($callback) && (is_string($callback) && !empty($callback))) {
+    public function callback(string $method, $callback, $rule = null)
+    {
+        $rule = $rule ?? $this->cache_rule;
 
-    //     } else {
-    //         throw new RuntimeException('');
-    //     }
-    // }
+        if (is_callable($callback) || is_array($callback)) {
+            $method = strtoupper($method);
+            $this->cache_method = $method;
+            $this->callbacks[$rule][$method]['handler'] = $callback;
+        } else {
+            throw new RuntimeException('');
+        }
+
+        return $this;
+    }
+    
+    public function options(array $options, $rule = null, $method = null)
+    {
+        $rule = $rule ?? $this->cache_rule;
+        $method = $method ?? $this->cache_method;
+
+        if (!empty($rule)) {
+            if (!empty($method)) {
+                $old_options = $this->options[$rule][$method]['options'];
+                $this->callbacks[$rule][$method] = array_merge($old_options, $options);
+            } else {                
+                $old_options = $this->rules[$rule];
+                $this->rules[$rule] = array_merge($old_options, $options);
+            }
+        } else {
+            throw new RuntimeException('');
+        }
+        
+        return $this;
+    }
 
     public function register(string $rule, $method, $callback = null)
     {
@@ -35,27 +74,6 @@ trait RegisterRuleFeature extends Model
             if (is_string($callback) || is_callable($callback)) {
                 $this->$method($rule, $callback);
             }
-        }
-    }
-    
-    protected function register(string $rule, string $method, array $processor)
-    {
-        // $keys = array_keys($this->rules, $rule);
-        $method = strtoupper($method);
-        $this->rules[$rule][$method] = $processor;
-        if (in_array($method, $valid_verb)) {
-            
-        } else {
-            throw new RuntimeException('');
-        }
-        
-        if (count($keys) > 0) {
-            $key = current($keys);
-                $this->callbacks[$key][$method] = $arguments[1];
-        } else {
-                $callbacks[$method] = $arguments[1];
-                $this->rules[] = $arguments[0];
-                $this->callbacks[] = $callbacks;
         }
     }
     
