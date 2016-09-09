@@ -43,20 +43,26 @@ trait RouteTrait extends ModelBase
         return $this;
     }
 
-    // to do
-    // public function parameter_handlers($source, $name = null, $handler = null)
-    // {
-    //     if (is_string($source) && is_string($name)) {
-    //         if ($this->judgeValidHandler($handler)) {
-    //         }
-    //         $parameter_handlers[$source][$name] = $handler;
-    //     } elseif (!is_array($source)) {
-    //         throw new RuntimeException('');
-    //     }
+    
+    public function parameter_handlers(string $source, $name, $handler = null)
+    {
+        if (!empty($source)) {
+            if (is_string($name) || is_array($name)) {
+                $name = is_string($name) ? [$name => $handler] : $name;
+            
+                if(in_array(false, array_map([$this, "judgeValidHandler"], $name))) {
+                    throw new RuntimeException('');
+                }
+            } else {
+                throw new RuntimeException('');
+            }
+        } else {
+            throw new RuntimeException('');
+        }
 
-    //     $this->segments = array_merge($this->segments, $segments);
-    //     return $this;
-    // }
+        $this->parameter_handlers[$source] = array_merge($this->parameter_handlers[$source], $name);
+        return $this;
+    }
 
     public function handler($handler)
     {
