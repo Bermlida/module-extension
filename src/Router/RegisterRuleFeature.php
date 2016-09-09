@@ -50,7 +50,7 @@ trait RegisterRuleFeature extends Model
         if (!empty($rule)) {
             if (!empty($method)) {
                 $old_options = $this->options[$rule][$method]['options'];
-                $this->callbacks[$rule][$method] = array_merge($old_options, $options);
+                $this->callbacks[$rule][$method]['options'] = array_merge($old_options, $options);
             } else {                
                 $old_options = $this->rules[$rule];
                 $this->rules[$rule] = array_merge($old_options, $options);
