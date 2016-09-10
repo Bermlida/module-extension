@@ -1,6 +1,6 @@
 <?php
 
-namespace Vista\Router;
+namespace Vista\Router\Stable;
 
 use RuntimeException;
 use ReflectionMethod;

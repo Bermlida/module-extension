@@ -5,7 +5,7 @@ namespace Vista\Router;
 use Application\Core\ModelBase;
 use Application\Models\Repositories\PostRepository;
 
-trait RouteTrait extends ModelBase
+trait RouteSetter extends ModelBase
 {
     public function namePrefix(string $name_prefix)
     {
@@ -33,35 +33,39 @@ trait RouteTrait extends ModelBase
 
     public function tokens($tokens, $regex = null)
     {
-        if (is_string($tokens) && is_string($regex)) {
-            $tokens = [$tokens => $regex];
-        } elseif (!is_array($tokens)) {
-            throw new RuntimeException('');
+        $judge_result = false;
+        if (is_string($tokens) || is_array($tokens)) {
+            $tokens = is_string($tokens) ? [$tokens => $regex] : $tokens;
+            $judge_result = !in_array(false, array_map([$this, "judgeValidRegex"], $tokens));
         }
-
-        $this->tokens = array_merge($this->tokens, $tokens);
-        return $this;
-    }
-
-    
-    public function parameter_handlers(string $source, $name, $handler = null)
-    {
-        if (!empty($source)) {
-            if (is_string($name) || is_array($name)) {
-                $name = is_string($name) ? [$name => $handler] : $name;
-            
-                if(in_array(false, array_map([$this, "judgeValidHandler"], $name))) {
-                    throw new RuntimeException('');
-                }
-            } else {
-                throw new RuntimeException('');
-            }
+        
+        if ($judge_result) {
+            $this->tokens = array_merge($this->tokens, $tokens);
+            return $this;
         } else {
             throw new RuntimeException('');
         }
+    }
+    
+    public function parameter_handlers(string $source, $name, $handler = null)
+    {
+        if ($this->judgeValidSource($source)) {
+            $source = strtolower($source);
+            $old_handlers = $this->parameter_handlers[$source] ?? [];
 
-        $this->parameter_handlers[$source] = array_merge($this->parameter_handlers[$source], $name);
-        return $this;
+            $judge_result = false;
+            if (is_string($name) || is_array($name)) {
+                $name = is_string($name) ? [$name => $handler] : $name;
+                $judge_result = !in_array(false, array_map([$this, "judgeValidHandler"], $name));
+            }
+        }
+        
+        if ($judge_result) {
+            $this->parameter_handlers[$source] = array_merge($old_handlers, $name);
+            return $this;
+        } else {
+            throw new RuntimeException('');
+        }
     }
 
     public function handler($handler)
@@ -73,26 +77,6 @@ trait RouteTrait extends ModelBase
         }
         return $this;
     }
-
-    // to do
-    // protected  function judgeValidHandler($handler)
-    // {
-    //     if (is_array($handler)) {
-    //         if (is_object($handler[0]) || is_string($handler[0])) {
-    //             if (!isset($handler[1])|| is_string($handler[1])) {
-                    
-    //             } else {
-                    
-    //             }
-    //         } else {
-    //             throw new RuntimeException('');
-    //         }
-    //     } elseif (is_callable($handler)) {
-    //         $this->handler = $handler;
-    //     } else {
-    //         throw new RuntimeException('');
-    //     }
-    // }
 }
 
 /* End of file PostModel.php */
