@@ -5,7 +5,7 @@ namespace Vista\Router;
 // use Application\Core\ModelBase;
 // use Application\Models\Repositories\PostRepository;
 
-trait RouteSetter extends ModelBase
+trait RouteSetterTrait extends ModelBase
 {
     public function namePrefix(string $name_prefix)
     {
@@ -28,6 +28,12 @@ trait RouteSetter extends ModelBase
     public function path(string $path)
     {
         $this->path = $path;
+        return $this;
+    }
+
+    public function method(string $method)
+    {
+        $this->method = strtoupper($method);
         return $this;
     }
 

@@ -2,7 +2,7 @@
 
 namespace Vista\Router;
 
-class Route extends EntityBase
+class Route implements RouteInterface
 {
     use RouteProperty, RouteSetter;
 

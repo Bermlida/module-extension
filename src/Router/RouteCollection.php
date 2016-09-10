@@ -2,17 +2,34 @@
 
 namespace Vista\Router;
 
-use RuntimeException;
+use Vista\Interfaces\RouteCollectionInterface;
+use Vista\Router\Traits\RouteCollectionTrait;
+use Vista\Router\Traits\RouteCollectionAccessTrait;
+//  implements Countable RouteManager
 
-trait RegisterRuleFeature extends Model
+class RouteCollection implements RouteCollectionInterface
 {
+    use RouteCollectionTrait, RouteCollectionAccessTrait;
+    
+    protected $routes = [];
 
-    public function route(string $name, string $path, $handler)
+    protected $default_route;
+
+    public function rule(string $name, string $path)
+    {
+        $route = new Route();
+        $route->name($name)
+                    ->path($path);
+
+        return $route;
+    }
+
+    public function route(string $name, string $path, string $method)
     {
         $route = new Route();
         $route = $route->name($name)
                                     ->path($path)
-                                    ->handler($handler);
+                                    ->method($method);
         return $route;
     }
 
@@ -35,8 +52,28 @@ trait RegisterRuleFeature extends Model
         $callback($route);
         return $route
     }
-    
-/*
+
+
+    public function options(array $options, $rule = null, $method = null)
+    {
+        $rule = $rule ?? $this->cache_rule;
+        $method = $method ?? $this->cache_method;
+
+        if (!empty($rule)) {
+            if (!empty($method)) {
+                $old_options = $this->options[$rule][$method]['options'];
+                $this->callbacks[$rule][$method]['options'] = array_merge($old_options, $options);
+            } else {                
+                $old_options = $this->rules[$rule];
+                $this->rules[$rule] = array_merge($old_options, $options);
+            }
+        } else {
+            throw new RuntimeException('');
+        }
+        
+        return $this;
+    }
+
     public function register(string $rule, $method, $callback = null)
     {
         if (is_array($method)) {
@@ -72,5 +109,5 @@ trait RegisterRuleFeature extends Model
             throw new RuntimeException('');
         }
     }
-    */
+
 }

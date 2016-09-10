@@ -1,11 +1,11 @@
 <?php
 
-namespace Vista\Router;
+namespace Vista\Router\Traits;
 
 // use Application\Core\RepositoryBase;
 // use Application\Models\Entities\Post;
 
-trait RouteProperty extends RepositoryBase
+trait RoutePropertyTrait
 {
     protected $name_prefix;
 
@@ -15,7 +15,7 @@ trait RouteProperty extends RepositoryBase
 
     protected $path;
 
-    // protected $segments = [];
+    protected $method;
 
     protected $tokens = [];
 

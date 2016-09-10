@@ -11,7 +11,6 @@ class Router extends Authenticatable
     protected $root = '';
     protected $rules = [];
     protected $callbacks = [];
-    // protected $http_methods = [];
 
     public function setRoot(string $namespace)
     {
