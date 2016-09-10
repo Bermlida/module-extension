@@ -2,8 +2,8 @@
 
 namespace Vista\Router;
 
-use Application\Core\ModelBase;
-use Application\Models\Repositories\PostRepository;
+// use Application\Core\ModelBase;
+// use Application\Models\Repositories\PostRepository;
 
 trait RouteSetter extends ModelBase
 {
@@ -78,6 +78,3 @@ trait RouteSetter extends ModelBase
         return $this;
     }
 }
-
-/* End of file PostModel.php */
-/* Location: ./application/models/PostModel.php */

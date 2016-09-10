@@ -2,8 +2,8 @@
 
 namespace Vista\Router;
 
-use Application\Core\RepositoryBase;
-use Application\Models\Entities\Post;
+// use Application\Core\RepositoryBase;
+// use Application\Models\Entities\Post;
 
 trait RouteProperty extends RepositoryBase
 {
@@ -23,6 +23,3 @@ trait RouteProperty extends RepositoryBase
 
     protected $handler;
 }
-
-/* End of file PostRepository.php */
-/* Location: ./application/repositories/PostRepository.php */
