@@ -2,16 +2,35 @@
 
 namespace Vista\Router;
 
+use Vista\Router\Traits\RouteSetterTrait;
+use Vista\Router\Traits\RouteGetterTrait;
+
 class Route implements RouteInterface
 {
-    use RouteProperty, RouteSetter;
+    use RouteSetterTrait, RouteGetterTrait;
 
-    protected  function judgeValidRegex($regex)
+    protected $name_prefix;
+
+    protected $path_prefix;
+
+    protected $name;
+
+    protected $path;
+
+    protected $methods = [];
+
+    protected $tokens = [];
+
+    protected $parameter_handlers = [];
+
+    protected $handler;
+
+    protected function judgeValidRegex($regex)
     {
         return is_string($regex);
     }
 
-    protected  function judgeValidSource(string $source)
+    protected function judgeValidSource(string $source)
     {
         $source = strtolower($source);
 

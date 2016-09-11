@@ -44,13 +44,25 @@ trait RouteCollectionAccessTrait
         }
     }
 
-    protected function getRoute(string $name)
+    protected function getRoute(string $name, $methods = null)
     {
-        if (isset($this->routes[$name])) {
+        if (is_string($methods) || is_array($methods)) {
+            $methods = is_string($methods) ? [$methods] : $methods;
+            
+            $routes = array_filter(function ($route) use ($name, $methods) {
+                $compare_path = ($route->path == $name);
+                $compare_methods = (count(array_diff($methods, $route->methods)) == 0);
+
+                return $compare_path && $compare_methods;
+            }, $this->routes);
+
+            return count($routes) == 1 ? $routes[0] : null;
+        } elseif (isset($this->routes[$name])) {    
             return $this->routes[$name];
-        } else {
-            throw new RuntimeException('');
         }
+        // else {
+        // }
+        return null;
     }
 
     protected function removeRoute(string $name)

@@ -1,9 +1,6 @@
 <?php
 
-namespace Vista\Router;
-
-// use Application\Core\ModelBase;
-// use Application\Models\Repositories\PostRepository;
+namespace Vista\Router\Traits;
 
 trait RouteSetterTrait extends ModelBase
 {
@@ -31,10 +28,21 @@ trait RouteSetterTrait extends ModelBase
         return $this;
     }
 
-    public function method(string $method)
+    public function methods($methods)
     {
-        $this->method = strtoupper($method);
-        return $this;
+        $judge_result = false;
+        if (is_string($methods) || is_array($methods)) {
+            $methods = is_string($methods) ? [$methods] : $methods;
+            $judge_result = !in_array(false, array_map([$this, "judgeValidMethod"], $methods));
+        }
+        
+        if ($judge_result) {
+            $methods = array_map("strtoupper", array_diff($methods, $this->methods));
+            $this->methods = array_merge($this->methods, $methods);
+            return $this;
+        } else {
+            throw new RuntimeException('');
+        }
     }
 
     public function tokens($tokens, $regex = null)
