@@ -6,7 +6,19 @@ use Countable;
 use ArrayAccess;
 use IteratorAggregate;
 
-interface RouteCollection extends IteratorAggregate, ArrayAccess, Countable
+interface RouteCollection extends ArrayAccess, IteratorAggregate, Countable
 {
-    
+    public function setRoutes(array $routes);
+
+    public function getRoutes();
+
+    public function removeRoute(string $name, $methods = null);
+
+    public function setRoute(Route $route);
+
+    public function getRoute(string $name, $methods = null);
+
+    public function removeRoute(string $name, $methods = null);
+
+    public function searchRoute(string $path, $methods);
 }
