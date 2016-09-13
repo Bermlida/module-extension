@@ -2,7 +2,7 @@
 
 namespace Vista\Router;
 
-use Vista\Interfaces\RouteCollectionInterface;
+use Vista\Router\Interfaces\RouteCollectionInterface;
 use Vista\Router\Traits\RouteCollectionTrait;
 
 class RouteCollection implements RouteCollectionInterface

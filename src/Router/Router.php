@@ -1,6 +1,6 @@
 <?php
 
-namespace Vista\Router\Stable;
+namespace Vista\Router;
 
 use RuntimeException;
 use ReflectionMethod;
@@ -8,131 +8,81 @@ use ReflectionFunction;
 
 class Router extends Authenticatable
 {
-    protected $root = '';
-    protected $rules = [];
-    protected $callbacks = [];
 
-    public function setRoot(string $namespace)
+    protected $default_route;
+
+    public function rule(string $name, string $path)
     {
-        $this->root = $namespace;
+        $route = new Route();
+        $route->name($name)
+                    ->path($path);
+
+        return $route;
     }
 
-    public function dispatch()
+    public function route(string $name, string $path, string $method)
     {
-        $uri = parse_url($_SERVER['REQUEST_URI']);
+        $route = new Route();
+        $route = $route->name($name)
+                                    ->path($path)
+                                    ->method($method);
+        return $route;
+    }
 
-        $path = trim($uri['path'], '/');
-        if (($index = $this->compareUri($path)) < 0) {
-            $processor = $this->resolveUri($path);
-            $reflector = $this->reflectMethod($processor->class, $processor->method);
-            $params = $_SERVER['REQUEST_METHOD'] == 'POST' ? $_POST : $_GET;
+    public function default($setting)
+    {
+        $route = $this->default_route ?? new Route();
+        if (is_array($setting)) {
+            foreach ($setting as $property => $parameters) {
+                call_user_func_array([$route, $property], (array)$parameters);
+            }
+        } elseif (is_callable($setting)) {
+            $setting($route);
+        }
+        return $route;
+    }
+    
+    public function group(string $name_prefix, string $path_prefix, callable $callback)
+    {
+        $route = new Route();
+        $callback($route);
+        return $route
+    }
+
+
+    public function options(array $options, $rule = null, $method = null)
+    {
+        $rule = $rule ?? $this->cache_rule;
+        $method = $method ?? $this->cache_method;
+
+        if (!empty($rule)) {
+            if (!empty($method)) {
+                $old_options = $this->options[$rule][$method]['options'];
+                $this->callbacks[$rule][$method]['options'] = array_merge($old_options, $options);
+            } else {                
+                $old_options = $this->rules[$rule];
+                $this->rules[$rule] = array_merge($old_options, $options);
+            }
         } else {
-            $reflector = $this->reflectCallback($index);
-            $params = $this->getParamsByUri($index, $path);
+            throw new RuntimeException('');
         }
-
-        $arguments = $this->bindArguments($reflector, $params);
-        $reflector->invokeArgs($arguments);
-    }
-
-    protected function compareUri(string $uri)
-    {
-        foreach ($this->rules as $key => $rule) {
-            $pattern = str_replace('/', '\/', $rule);
-            $pattern = '/' + preg_replace('/\{\w+\}/', '\w+', $rule) + '/';
-
-            if (preg_match($pattern, $uri) === 1) {
-                return $key;
-            }
-        }
-        return -1;
-    }
-
-    protected function resolveUri(string $uri)
-    {
-        $segments = explode('/', $uri);
-        $method = array_pop($segments);
         
-        foreach ($segments as $key => $segment) {
-            if (!(strpos($segment, '_') === false)) {
-                $segment = implode(array_map(function ($segment) {
-                    $segment = ucfirst(strtolower($segment));
-                    return $segment;
-                }, explode('_', $segment)));
-            } else {
-                $segment = ucfirst($segment);
+        return $this;
+    }
+
+    public function register(string $rule, $method, $callback = null)
+    {
+        if (is_array($method)) {
+            foreach ($method as $verb => $callback) {
+                $verb = strtolower($verb);
+                $this->$verb($rule, $callback);
             }
-            $segments[$key] = $segment;
-        }
-        $class = $this->root . '/' . implode('/', $segments);
-
-        return (object)(['class' => $class, 'method' => $method]);
-    }
-
-    protected function reflectMethod(string $class, string $method)
-    {
-        $object = new $class;
-        $reflector_method = new ReflectionMethod($object, $method);
-        $closure = $reflector_method->getClosure($object);
-        return new ReflectionFunction($closure);
-    }
-
-    protected function reflectCallback(int $index)
-    {
-        $request_method = $_SERVER['REQUEST_METHOD'];
-        $callbacks = array_change_key_case($this->callbacks[$index], CASE_UPPER);
-        $callback = $callbacks[$request_method];
-
-        if (is_callable($callback)) {
-            return new ReflectionFunction($callback);
-        } elseif (is_string($callback) && !(strpos($callback, '::') === false)) {
-            $segments = explode('::', $callback);
-            return $this->reflectMethod($segments[0], $segments[1]);
-        }
-        return null;
-    }
-
-    protected function getParamsByUri(string $index, string $uri)
-    {
-        $rule_segments = explode('/', $this->rules[$index]);
-        $uri_segments = explode('/', $uri);
-
-        foreach ($rule_segments as $index => $segment) {
-            if (preg_match('/\{(\w+)\}/', $segment, $matches) === 1) {
-                $key = $matches[1];
-                $value = $uri_segments[$index];
-                $params[$key] = $value;
+        } elseif (is_string($method) && $method != '') {
+                $method = strtolower($method);
+            if (is_string($callback) || is_callable($callback)) {
+                $this->$method($rule, $callback);
             }
         }
-
-        return $params ?? [];
-    }
-
-    protected function bindArguments(ReflectionFunction $reflector, array $params)
-    {
-        $parameters = $reflector->getParameters();
-        
-        if (count($parameters) > 0) {
-            $reflector = $parameters[0]->getClass();
-            $interface_constraint = '';
-            
-            if (!is_null($reflector) && $reflector->implementsInterface($interface_constraint)) {
-                $object = new $reflector->getName();
-                foreach ($params as $key => $value) {
-                    $object->$key = $value;
-                }
-                $arguments[] = $object;
-            } else {
-                foreach ($parameters as $key => $parameter) {
-                    if (isset($params[$parameter->name])) {
-                        $value = $params[$parameter->name];
-                        $arguments[$key] = $value;
-                    }
-                }
-            }
-        }
-
-        return $arguments ?? [];
     }
 
     public function __call($method, $arguments)

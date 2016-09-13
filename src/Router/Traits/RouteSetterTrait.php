@@ -2,8 +2,16 @@
 
 namespace Vista\Router\Traits;
 
-trait RouteSetterTrait extends ModelBase
+trait RouteSetterTrait
 {
+    abstract protected function judgeValidMethod(string $method);
+
+    abstract protected function judgeValidRegex(string $regex);
+
+    abstract protected function judgeValidSource(string $source);
+    
+    abstract protected function judgeValidHandler($handler);
+
     public function namePrefix(string $name_prefix)
     {
         $this->name_prefix = $name_prefix;
@@ -28,6 +36,22 @@ trait RouteSetterTrait extends ModelBase
         return $this;
     }
 
+    public function tokens($tokens, $regex = null)
+    {
+        $judge_result = false;
+        if (is_string($tokens) || is_array($tokens)) {
+            $tokens = is_string($tokens) ? [$tokens => $regex] : $tokens;
+            $judge_result = !in_array(false, array_map([$this, "judgeValidRegex"], $tokens));
+        }
+        
+        if ($judge_result) {
+            $this->tokens = array_merge($this->tokens, $tokens);
+            return $this;
+        } else {
+            throw new RuntimeException('');
+        }
+    }
+
     public function methods($methods)
     {
         $judge_result = false;
@@ -45,16 +69,27 @@ trait RouteSetterTrait extends ModelBase
         }
     }
 
-    public function tokens($tokens, $regex = null)
+    public function handler($handler)
+    {
+        if ($this->judgeValidHandler($handler)) {
+            $this->handler = $handler;
+        } else {
+            throw new RuntimeException('');
+        }
+        return $this;
+    }
+
+    public function parameter_sources($sources)
     {
         $judge_result = false;
-        if (is_string($tokens) || is_array($tokens)) {
-            $tokens = is_string($tokens) ? [$tokens => $regex] : $tokens;
-            $judge_result = !in_array(false, array_map([$this, "judgeValidRegex"], $tokens));
+        if (is_string($sources) || is_array($sources)) {
+            $sources = is_string($sources) ? [$sources] : $sources;
+            $judge_result = !in_array(false, array_map([$this, "judgeValidSource"], $sources));
         }
         
         if ($judge_result) {
-            $this->tokens = array_merge($this->tokens, $tokens);
+            $sources = array_map("strtolower", array_diff($sources, $this->parameter_sources));
+            $this->parameter_sources = array_merge($this->parameter_sources, $sources);
             return $this;
         } else {
             throw new RuntimeException('');
@@ -80,15 +115,5 @@ trait RouteSetterTrait extends ModelBase
         } else {
             throw new RuntimeException('');
         }
-    }
-
-    public function handler($handler)
-    {
-        if ($this->judgeValidHandler($handler)) {
-            $this->handler = $handler;
-        } else {
-            throw new RuntimeException('');
-        }
-        return $this;
     }
 }

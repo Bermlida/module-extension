@@ -6,7 +6,7 @@ use Countable;
 use ArrayAccess;
 use IteratorAggregate;
 
-interface RouteCollection extends ArrayAccess, IteratorAggregate, Countable
+interface RouteCollectionInterface extends ArrayAccess, IteratorAggregate, Countable
 {
     public function setRoutes(array $routes);
 

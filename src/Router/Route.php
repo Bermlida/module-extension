@@ -17,17 +17,24 @@ class Route implements RouteInterface
 
     protected $path;
 
-    protected $methods = [];
-
     protected $tokens = [];
 
-    protected $parameter_handlers = [];
+    protected $methods = [];
 
     protected $handler;
 
-    protected function judgeValidRegex($regex)
+    protected $parameter_sources = [];
+
+    protected $parameter_handlers = [];
+
+    protected function judgeValidMethod(string $method)
     {
-        return is_string($regex);
+        return true;
+    }
+
+    protected function judgeValidRegex(string $regex)
+    {
+        return true;
     }
 
     protected function judgeValidSource(string $source)
