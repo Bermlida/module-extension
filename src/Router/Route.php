@@ -22,11 +22,13 @@ class Route implements RouteInterface
     protected $methods = [];
 
     protected $handler;
-/*
-    protected $parameter_sources = [];
 
-    protected $parameter_handlers = [];
-*/
+    protected $param_sources = [];
+
+    protected $param_source_handlers = [];
+
+    protected $param_item_handlers = [];
+
     protected function judgeValidMethod(string $method)
     {
         return true;

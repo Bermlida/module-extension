@@ -5,31 +5,33 @@ namespace Vista\Router;
 use Vista\Router\Traits\RouteSetterTrait;
 use Vista\Router\Traits\RouteGetterTrait;
 
-class Route implements RouteInterface
+class RouteHandler implements RouteHandlerInterface
 {
     use RouteSetterTrait, RouteGetterTrait;
 
-    protected $name_prefix;
+    protected $source;
 
-    protected $path_prefix;
+    protected $processor = [];
 
-    protected $name;
+    protected $param_processors = [];
 
-    protected $path;
+    // protected $param_sources = [];
 
-    protected $tokens = [];
-
-    protected $methods = [];
-
-    protected $handler;
-
-    protected $parameter_sources = [];
-
-    protected $parameter_handlers = [];
-
-    protected function judgeValidMethod(string $method)
+    public function param_sources($sources)
     {
-        return true;
+        $judge_result = false;
+        if (is_string($sources) || is_array($sources)) {
+            $sources = is_string($sources) ? [$sources] : $sources;
+            $judge_result = !in_array(false, array_map([$this, 'judgeValidSource'], $sources));
+        }
+        
+        if ($judge_result) {
+            $sources = array_map('strtolower', array_diff($sources, $this->parameter_sources));
+            $this->parameter_sources = array_merge($this->parameter_sources, $sources);
+            return $this;
+        } else {
+            throw new RuntimeException('');
+        }
     }
 
     protected function judgeValidRegex(string $regex)

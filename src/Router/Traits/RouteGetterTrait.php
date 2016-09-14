@@ -37,12 +37,13 @@ trait RouteGetterTrait
     protected function getParameterHandlersResolve()
     {
         $parameter_handlers = array_fill_keys($this->parameter_sources, []);
+        // foreach
         foreach ($this->parameter_handlers as $source => $handlers) {
             $parameter_handlers[$source] = array_map([$this, 'resolveHandler'], $handlers);
         }
         return $parameter_handlers;
     }
-    
+*/
     public function __get($name) 
     {        
         if (strpos('_', $name) !== false) {
@@ -55,7 +56,7 @@ trait RouteGetterTrait
         } else {
             $name = ucfirst($name);
         }
-*/
+
         $method = 'get' . $name;
         if (method_exists($this, $method)) {
             return $this->$method();
