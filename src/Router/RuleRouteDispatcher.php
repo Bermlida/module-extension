@@ -38,17 +38,6 @@ class RuleRouteDispatcher implements RouteDispatcherInterface
 
     protected function matchUri(Route $rule)
     {
-        $pattern = preg_replace_callback(
-            '/\{(\w+)\}/',
-            function (array $matches) use ($rule->tokens) {
-                    unset($matches[0]);
-                    foreach ($matches as $key => $token) {
-                    }
-                    $token = $matches[1];
-                    return '(' .  ($rule->tokens[$token] ?? '\w+') . ')';
-            },
-            str_replace('/', '\/', $rule->path)
-        );
         
     }
 }

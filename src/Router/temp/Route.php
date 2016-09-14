@@ -22,11 +22,11 @@ class Route implements RouteInterface
     protected $methods = [];
 
     protected $handler;
-/*
+
     protected $parameter_sources = [];
 
     protected $parameter_handlers = [];
-*/
+
     protected function judgeValidMethod(string $method)
     {
         return true;
@@ -36,7 +36,7 @@ class Route implements RouteInterface
     {
         return true;
     }
-/*
+
     protected function judgeValidSource(string $source)
     {
         $source = strtolower($source);
@@ -52,7 +52,7 @@ class Route implements RouteInterface
                 return false;
         }
     }
-*/
+    
     protected function judgeValidHandler($handler)
     {
         if (is_array($handler)) {
