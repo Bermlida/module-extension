@@ -3,6 +3,7 @@
 namespace Vista\Router\Traits;
 
 use RuntimeException;
+use Vista\Router\Interfaces\RouteInterface;
 
 trait RouteCollectionTrait
 {
@@ -21,7 +22,7 @@ trait RouteCollectionTrait
         $this->routes = [];
     }
     
-    public function setRoute(Route $route)
+    public function setRoute(RouteInterface $route)
     {
         foreach ($this->routes as $current_route) {
             $compare_path = $current_route->path == $route->path;

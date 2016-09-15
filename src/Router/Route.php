@@ -2,6 +2,7 @@
 
 namespace Vista\Router;
 
+use Vista\Router\Interfaces\RouteInterface;
 use Vista\Router\Traits\RouteSetterTrait;
 use Vista\Router\Traits\RouteGetterTrait;
 
@@ -25,9 +26,9 @@ class Route implements RouteInterface
 
     protected $param_sources = [];
 
-    protected $param_source_handlers = [];
+    protected $param_handlers = [];
 
-    protected $param_item_handlers = [];
+    // protected $param_sources_handler = [];
 
     protected function judgeValidMethod(string $method)
     {
@@ -38,11 +39,9 @@ class Route implements RouteInterface
     {
         return true;
     }
-/*
+
     protected function judgeValidSource(string $source)
     {
-        $source = strtolower($source);
-
         switch ($source) {
             case "uri":
             case "get":
@@ -54,7 +53,7 @@ class Route implements RouteInterface
                 return false;
         }
     }
-*/
+
     protected function judgeValidHandler($handler)
     {
         if (is_array($handler)) {
@@ -67,5 +66,10 @@ class Route implements RouteInterface
             return true;
         }
         return false;
+    }
+
+    protected function resolveHandler($handler)
+    {
+        
     }
 }

@@ -4,7 +4,7 @@ namespace Vista\Router\Traits;
 
 trait RouteGetterTrait
 {
-//     abstract protected function resolveHandler($handler);
+    abstract protected function resolveHandler($handler);
 
     protected function getFullName()
     {
@@ -33,17 +33,13 @@ trait RouteGetterTrait
     {
         return $this->resolveHandler($this->handler);
     }
-/*
-    protected function getParameterHandlersResolve()
+
+    protected function getParamHandlersResolve()
     {
-        $parameter_handlers = array_fill_keys($this->parameter_sources, []);
-        // foreach
-        foreach ($this->parameter_handlers as $source => $handlers) {
-            $parameter_handlers[$source] = array_map([$this, 'resolveHandler'], $handlers);
-        }
-        return $parameter_handlers;
+        $param_handlers_resolve = array_map([$this, 'resolveHandler'], $this->param_handlers);
+        return $param_handlers_resolve;
     }
-*/
+
     public function __get($name) 
     {        
         if (strpos('_', $name) !== false) {
