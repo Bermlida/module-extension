@@ -4,8 +4,6 @@ namespace Vista\Router\Traits;
 
 trait RouteGetterTrait
 {
-    abstract protected function resolveHandler($handler);
-
     protected function getFullName()
     {
         return $this->name_prefix . '.' . $this->name;
@@ -16,7 +14,7 @@ trait RouteGetterTrait
         return $this->path_prefix . '/' . $this->path;
     }
 
-    protected function getRegex()
+    protected function getFullRegex()
     {
         $regex = preg_replace_callback(
             '/\{(\w+)\}/',
@@ -31,13 +29,21 @@ trait RouteGetterTrait
 
     protected function getHandlerResolve()
     {
-        return $this->resolveHandler($this->handler);
+        if (method_exists($this, 'resolveHandler')) {
+            return $this->resolveHandler($this->handler);
+        } else {
+            return $this->handler;
+        }
     }
 
     protected function getParamHandlersResolve()
     {
-        $param_handlers_resolve = array_map([$this, 'resolveHandler'], $this->param_handlers);
-        return $param_handlers_resolve;
+        if (method_exists($this, 'resolveHandler')) {
+            $param_handlers_resolve = array_map([$this, 'resolveHandler'], $this->param_handlers);
+            return $param_handlers_resolve;
+        } else {
+            return $this->param_handlers;
+        }
     }
 
     public function __get($name) 

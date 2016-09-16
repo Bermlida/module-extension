@@ -8,7 +8,7 @@ use Vista\Router\Interfaces\RouteDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class RuleRouteDispatcher implements RouteDispatcherInterface
-{//Register,  extends RouteManager extends
+{//extends extends
     protected $rules;
 
     // protected $match_rule;
@@ -33,30 +33,5 @@ class RuleRouteDispatcher implements RouteDispatcherInterface
             }
         }
         return null;
-    }
-
-    protected function bindArguments(RouteInterface $route, ServerRequestInterface $request)
-    {
-        
-    }
-
-    protected function executeHandler($handler, $arguments)
-    {
-        switch (count($arguments)) {
-            case 0:
-                return $handler();
-            case 1:
-                return $handler($arguments[0]);
-            case 2:
-                return $handler($arguments[0], $arguments[1]);
-            case 3:
-                return $handler($arguments[0], $arguments[1], $arguments[2]);
-            case 4:
-                return $handler($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
-            case 5:
-                return $handler($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
-            default:
-                return call_user_func_array($handler, $arguments);
-        }
     }
 }
