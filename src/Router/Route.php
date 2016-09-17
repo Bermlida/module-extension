@@ -2,7 +2,9 @@
 
 namespace Vista\Router;
 
+use ReflectionClass;
 use Vista\Router\Interfaces\RouteInterface;
+use Vista\Router\Interfaces\RouteModelInterface;
 use Vista\Router\Traits\RouteSetterTrait;
 use Vista\Router\Traits\RouteGetterTrait;
 use Vista\Router\Traits\RouteTrait;
@@ -29,8 +31,6 @@ class Route implements RouteInterface
     protected $param_sources = [];
 
     protected $param_handlers = [];
-
-    // protected $param_sources_handler = [];
 
     protected function judgeValidMethod(string $method)
     {
@@ -130,19 +130,23 @@ class Route implements RouteInterface
     protected function bindArguments(array $params)
     {
         $handler = $this->resolveHandler($this->handler);
-        $reflector = new ReflectionFunction($handler_resolve);
-        $parameters = $reflector->getParameters();
+        $parameters = (new ReflectionFunction($handler))->getParameters();
         
-        if (count($parameters) > 0) {
+        if (!empty($parameters)) {
             $reflector = $parameters[0]->getClass();
-            $interface_constraint = '';
+            $interface = RouteModelInterface::class;
             
-            if (!is_null($reflector) && $reflector->implementsInterface($interface_constraint)) {
-                $object = new $reflector->getName();
-                foreach ($params as $key => $value) {
-                    $object->$key = $value;
+            if (!is_null($reflector) && $reflector->implementsInterface($interface)) {
+                $constructor = $reflector->getConstructor();                
+                if (!is_null($constructor)) {
+                    foreach ($constructor->getParameters() as $key => $parameter) {
+                        if (isset($params[$parameter->name])) {
+                            $value = $params[$parameter->name];
+                            $arguments[$key] = $value;
+                        }
+                    }
+                    $arguments = [$reflector->newInstanceArgs($arguments)];
                 }
-                $arguments[] = $object;
             } else {
                 foreach ($parameters as $key => $parameter) {
                     if (isset($params[$parameter->name])) {

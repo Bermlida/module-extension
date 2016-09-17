@@ -16,6 +16,20 @@ trait RouteTrait
 
     abstract protected function callHandler(Callable $handler, array $arguments);
 
+    public function matchUri(ServerRequestInterface $request)
+    {
+        $uri = $request->getServerParams()['REQUEST_URI'];
+        $uri_path = trim(parse_url($uri)['path'], '/');
+
+        return preg_match('/' . $this->full_regex . '/', $uri_path) === 1;
+    }
+
+    public function matchMethod(ServerRequestInterface $request)
+    {
+        $request_method = $request->getServerParams()['REQUEST_METHOD'];
+
+        return in_array($request_method, $this->methods);
+    }
 
     public function executeHandler(ServerRequestInterface $request)
     {
