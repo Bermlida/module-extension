@@ -17,37 +17,38 @@ class Router
 
     protected $cache_methods;
 
+    protected $default_route;
+
     protected $collection = new RouteCollection();
 
     protected $dispatcher = new RouteDispatcher();
 
-    public function rule(string $path, $method, array $options = [])
+    public function route(string $path, $methods, $handle)
     {
-        $route = $this->cacheRoute();
-        $rule_options = ['path' => $path, 'methods' => $methods];
-        $route_options = array_merge($options, $rule_options);
+        $route = $this->registerRoute();
 
-        foreach ($route_options as $key => $option) {
-            $this->$key($option);
-        }
+        $route->path($path)
+              ->methods($methods)
+              ->handle($handle);
         
         $this->cache_path = $route->path;
         $this->cache_methods = $route->methods;
         return $this;
     }
 
-    public function default($setting)
+    public function default($settings)
     {
-         
-            
-        $route = $this->default_route ?? new Route();
-        if (is_array($setting)) {
-            foreach ($setting as $property => $parameters) {
-                call_user_func_array([$route, $property], (array)$parameters);
+        $route = $this->registerRoute();
+
+        if (is_array($settings)) {
+            foreach ($settings as $property => $parameters) {
+                $this->__call($property, $parameters);
             }
-        } elseif (is_callable($setting)) {
-            $setting($route);
+        } elseif (is_callable($settings)) {
+            $settings($this);
         }
+
+        $this->default_route = $route;
         return $route;
     }
     
