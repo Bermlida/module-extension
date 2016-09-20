@@ -95,50 +95,7 @@ trait RouteSetterTrait
             throw new RuntimeException('');
         }
     }
-/*
-    protected function setParamSourcesHandler($source, $items = [])
-    {
-
-        $judge_result = false;
-        if (is_string($source) || is_array($source)) {
-            $source = is_string($source) ? [$source => $handler] : $source;
-            $judge_result = !in_array(false, array_map([$this, 'judgeValidHandler'], $source));
-        }
-        
-        if ($judge_result) {
-            $this->param_sources_handler = array_merge($this->param_sources_handler, $source);
-            return $this;
-        } else {
-            throw new RuntimeException('');
-        }
-
-        if (is_string($source) || is_array($source)) {
-
-        }
-
-        $judge_source = $this->judgeValidSource($source);
-        $judge_handler = is_null($handler) ? true : $this->judgeValidHandler($handler);
-        $judge_items = empty($item) ? true : !in_array(false, array_map([$this, 'judgeValidHandler'], $item));
-        if ($judge_source && $judge_handler && $judge_item_handlers) {            
-            $source = strtolower($source);
-            $original_handlers = $this->parameters[$source] ?? [];
-            if (!is_null($handler) || !empty($item_handlers)) {
-                if (!is_null($handler)) {
-                    $new_handlers['handler'] = $handler;
-                }
-                if (!empty($item_handlers)) {
-                    $new_handlers['item_handlers'] = $item_handlers;
-                }
-                $this->parameters[$source] = array_merge($original_handlers, $new_handlers);
-            } else {
-                $this->parameters[$source] = $original_handlers;
-            }
-            return $this;
-        } else {
-            throw new RuntimeException('');
-        }
-    }
-*/
+    
     protected function setParamHandlers($items, $handler = null)
     {
         $judge_result = false;

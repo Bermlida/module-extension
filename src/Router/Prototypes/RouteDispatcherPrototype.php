@@ -57,8 +57,8 @@ abstract class RouteDispatcherPrototype implements RouteDispatcherInterface
                 } else {
                     call_user_func([$this, $method], $request);
                 }
-                return $this;
             }
+            return $this;
         }
         throw new RuntimeException('');
     }
