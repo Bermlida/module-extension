@@ -3,8 +3,8 @@
 namespace Vista\Router;
 
 use RuntimeException;
-use Vista\Router\RouteCollection;
-use Vista\Router\RouteDispatcher;
+use Vista\Router\Interfaces\RouteCollectionInterface;
+use Vista\Router\Interfaces\RouteDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Router
@@ -12,16 +12,38 @@ class Router
     protected $root_namespace;
 
     protected $custom_setting;
-/*
-    protected $cache_path;
-*/
+
     protected $default_route;
 
     protected $cache_route;
 
-    protected $collection = new RouteCollection();
+    protected $cache_path_prefix = '';
 
-    protected $dispatcher = new RouteDispatcher();
+    protected $cache_name_prefix = '';
+
+    protected $collection;
+
+    protected $dispatcher;
+
+    public function __construct(
+        RouteCollectionInterface $collection,
+        RouteDispatcherInterface $dispatcher
+    ) {
+        $this->collection = $collection;
+        $this->dispatcher = $dispatcher;
+    }
+
+    public function root_namespace(string $root_namespace)
+    {
+        $this->root_namespace = $root_namespace;
+        return $this;
+    }
+
+    public function custom_setting($custom_setting)
+    {
+        $this->custom_setting = $custom_setting;
+        return $this;
+    }
 
     public function options(string $path, $handler = null)
     {
@@ -62,11 +84,15 @@ class Router
     {
         $route = $this->registerRoute();
 
-        $route->path($path)
-                    ->methods($methods);
-        
+        $route->path($path)->methods($methods);        
         if (!is_null($handler)) {
             $route->handler($handler);
+        }
+        if (!empty($this->cache_path_prefix)) {
+            $route->path_prefix($this->cache_path_prefix);
+        }
+        if (!empty($this->cache_name_prefix)) {
+            $route->name_prefix($this->cache_name_prefix);
         }
 
         $this->collection[] = $route;
@@ -74,14 +100,16 @@ class Router
         return $this;
     }
     
-    public function group(string $name_prefix, string $path_prefix, callable $callback)
+    public function group(string $path_prefix, callable $callback, string $name_prefix = '')
     {
-        $route = $this->registerRoute();
+        $this->cache_path_prefix = $path_prefix;
+        $this->cache_name_prefix = $name_prefix;
+        
+        $callback($this);
 
-        $route->name_prefix($name_prefix)
-                    ->path_prefix($path_prefix);
-        $callback($route);
-        return $route
+        $this->cache_path_prefix = '';
+        $this->cache_name_prefix = '';
+        return $this;
     }
 
     public function default($callback = null)
@@ -112,7 +140,8 @@ class Router
 
     protected function registerRoute()
     {
-
+        $route = is_object($this->default_route) ? clone $this->default_route : new Route();
+        return $route;
     }
 
     public function __call($method, $arguments)
