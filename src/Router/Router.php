@@ -12,51 +12,89 @@ class Router
     protected $root_namespace;
 
     protected $custom_setting;
-
+/*
     protected $cache_path;
-
-    protected $cache_methods;
-
+*/
     protected $default_route;
+
+    protected $cache_route;
 
     protected $collection = new RouteCollection();
 
     protected $dispatcher = new RouteDispatcher();
 
-    public function route(string $path, $methods, $handle)
+    public function options(string $path, $handler = null)
+    {
+        return $this->route($path, 'options', $handler);
+    }
+
+    public function head(string $path, $handler = null)
+    {
+        return $this->route($path, 'head', $handler);
+    }
+
+    public function get(string $path, $handler = null)
+    {
+        return $this->route($path, 'get', $handler);
+    }
+
+    public function put(string $path, $handler = null)
+    {
+        return $this->route($path, 'put', $handler);
+    }
+
+    public function delete(string $path, $handler = null)
+    {
+        return $this->route($path, 'delete', $handler);
+    }
+
+    public function post(string $path, $handler = null)
+    {
+        return $this->route($path, 'post', $handler);
+    }
+
+    public function patch(string $path, $handler = null)
+    {
+        return $this->route($path, 'patch', $handler);
+    }
+
+    public function route(string $path, $methods, $handler = null)
     {
         $route = $this->registerRoute();
 
         $route->path($path)
-              ->methods($methods)
-              ->handle($handle);
+                    ->methods($methods);
         
-        $this->cache_path = $route->path;
-        $this->cache_methods = $route->methods;
-        return $this;
-    }
-
-    public function default($settings)
-    {
-        $route = $this->registerRoute();
-
-        if (is_array($settings)) {
-            foreach ($settings as $property => $parameters) {
-                $this->__call($property, $parameters);
-            }
-        } elseif (is_callable($settings)) {
-            $settings($this);
+        if (!is_null($handler)) {
+            $route->handler($handler);
         }
 
-        $this->default_route = $route;
-        return $route;
+        $this->collection[] = $route;
+        $this->cache_route = $route;
+        return $this;
     }
     
     public function group(string $name_prefix, string $path_prefix, callable $callback)
     {
-        $route = new Route();
+        $route = $this->registerRoute();
+
+        $route->name_prefix($name_prefix)
+                    ->path_prefix($path_prefix);
         $callback($route);
         return $route
+    }
+
+    public function default($callback = null)
+    {
+        $route = $this->registerRoute();
+
+        $this->cache_route = $route;
+        if (is_callable($callback)) {
+            $callback($this);
+        }
+
+        $this->default_route = $route;
+        return $this;
     }
 
     public function dispatch(ServerRequestInterface $request)
@@ -72,26 +110,29 @@ class Router
         }
     }
 
+    protected function registerRoute()
+    {
+
+    }
+
     public function __call($method, $arguments)
     {
         if (is_object($this->cache_route) && method_exists($this->cache_route, $method)) {            
             switch (count($arguments)) {
                 case 0:
-                    return $this->$cache_route->$method();
+                    $this->cache_route->$method();
                 case 1:
-                    return $this->$cache_route->$method($arguments[0]);
+                    $this->cache_route->$method($arguments[0]);
                 case 2:
-                    return $this->$cache_route->$method($arguments[0], $arguments[1]);
+                    $this->cache_route->$method($arguments[0], $arguments[1]);
                 case 3:
-                    return $this->$cache_route->$method($arguments[0], $arguments[1], $arguments[2]);
+                    $this->cache_route->$method($arguments[0], $arguments[1], $arguments[2]);
                 case 4:
-                    return $this->$cache_route->$method($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+                    $this->cache_route->$method($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
                 default:
-                    return call_user_func_array([$this->cache_route, $method], $arguments);
+                    call_user_func_array([$this->cache_route, $method], $arguments);
             }
         }
-
-
         return $this;
     }
 }
