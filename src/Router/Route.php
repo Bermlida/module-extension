@@ -15,13 +15,13 @@ class Route implements RouteInterface
 {
     use RouteSetterTrait, RouteGetterTrait, RouteTrait;
 
-    protected $name_prefix;
+    protected $name_prefix = '';
 
-    protected $path_prefix;
+    protected $path_prefix = '';
 
-    protected $name;
+    protected $name = '';
 
-    protected $path;
+    protected $path = '';
 
     protected $tokens = [];
 

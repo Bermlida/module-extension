@@ -6,5 +6,5 @@ use Vista\Router\Prototypes\RouteDispatcherPrototype;
 
 class RouteDispatcher extends RouteDispatcherPrototype
 {
-
+    //
 }
