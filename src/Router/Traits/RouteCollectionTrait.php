@@ -25,16 +25,17 @@ trait RouteCollectionTrait
     public function setRoute(RouteInterface $route)
     {
         foreach ($this->routes as $current_route) {
-            $compare_path = $current_route->path == $route->path;
+            $compare_path = $current_route->full_path == $route->full_path;
             $compare_methods = !empty(array_intersect($route->methods, $current_route->methods));
+            $compare_name = ($current_route->full_name == $route->full_name) && !empty($route->full_name);
 
-            if ($compare_path && $compare_methods) {
+            if ($compare_path && $compare_methods && $compare_name) {
                 throw new RuntimeException('');
             }
         }
         
-        if (isset($route->name)) {
-            $this->routes[$name] = $route;
+        if (!empty($route->full_name)) {
+            $this->routes[$route->full_name] = $route;
         } else {
             $this->routes[] = $route;
         }
@@ -56,7 +57,7 @@ trait RouteCollectionTrait
     {
         if (is_string($methods) || is_array($methods)) {
             $key = $this->searchRoute($name, $methods);
-        } elseif (isset($this->routes[$key])) {
+        } elseif (isset($this->routes[$name])) {
             $key = $name;
         }
 
@@ -73,7 +74,7 @@ trait RouteCollectionTrait
             $methods = is_string($methods) ? [$methods] : $methods;
             
             foreach ($this->routes as $key => $route) {
-                $compare_path = $route->path == $path;
+                $compare_path = $route->full_path == $path;
                 $compare_methods = count(array_diff($methods, $route->methods)) == 0;
 
                 if ($compare_path && $compare_methods) {

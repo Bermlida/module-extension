@@ -2,7 +2,8 @@
 
 namespace Vista\Router;
 
-use ReflectionClass;
+use ReflectionMethod;
+use ReflectionFunction;
 use Vista\Router\Interfaces\RouteInterface;
 use Vista\Router\Interfaces\RouteModelInterface;
 use Vista\Router\Traits\RouteSetterTrait;

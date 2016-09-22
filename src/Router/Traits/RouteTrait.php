@@ -14,7 +14,7 @@ trait RouteTrait
 
     abstract protected function bindArguments(array $params);
 
-    abstract protected function callHandler(Callable $handler, array $arguments);
+    abstract protected function callHandler(callable $handler, array $arguments);
 
     public function matchUri(ServerRequestInterface $request)
     {

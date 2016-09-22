@@ -6,12 +6,14 @@ trait RouteGetterTrait
 {
     protected function getFullName()
     {
-        return $this->name_prefix . '.' . $this->name;
+        $name_prefix = !empty($this->name_prefix) ? $this->name_prefix . '.' : '';
+        return $name_prefix . $this->name;
     }
 
     protected function getFullPath()
     {
-        return $this->path_prefix . '/' . $this->path;
+        $path_prefix = !empty($this->path_prefix) ? $this->path_prefix . '/' : '';
+        return $path_prefix . $this->path;
     }
 
     protected function getFullRegex()

@@ -2,6 +2,8 @@
 
 namespace Vista\Router\Traits;
 
+use RuntimeException;
+
 trait RouteSetterTrait
 {
     abstract protected function judgeValidMethod(string $method);
