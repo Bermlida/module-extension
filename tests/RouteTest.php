@@ -1,82 +1,89 @@
 <?php
 
-use Vista\Router\Interfaces\RouteInterface;
+// use Vista\Router\Interfaces\RouteInterface;
 use Vista\Router\Route;
 
 class RouteTest extends PHPUnit_Framework_TestCase
 {
-    public function routeProvider()
+    public function handlerProvider()
     {
         return [
-            [new Route()]
+            [
+                function () {
+                    print 'test';
+                }
+            ],
+            [[$this]],
+            [['stdClass']],
+            [['stdClass', 'test']],
+            [[$this, 'test']]
         ];
     }
 
-    /**
-     * @dataProvider routeProvider
-     */
-    public function testSetRoute(RouteInterface $route)
+    public function testSetPrototype()
     {
+        $route = new Route();
+
         $route
             ->name_prefix('users.account.')->name('.profiles.item')
             ->path_prefix('/users/{user_id}/account/')->path('/pofiles/{item_name}/{item_prototype}')
             ->tokens('user_id', '\d+')->tokens(['item_prototype' => 'name|value'])
-            ->methods('get')->methods(['options', 'header']);
+            ->methods('get')->methods(['options', 'header'])
+            ->param_sources('Uri')->param_sources(['get', 'post', 'file']);
 
         return $route;
     }
 
     /**
-     * @depends testName
+     * @depends testSetPrototype
+     * @dataProvider handlerProvider
      */
-    public function testPath()
+    public function testSetHandler($handler, Route $route)
+    {
+        $route->handler($handler);
+
+        $this->assertEquals($route->handler, $handler);
+
+        return $route;
+    }
+
+    /**
+     * @depends testSetPrototype
+     */
+    public function testEqualPrototype(Route $route)
+    {
+        $this->assertEquals($route->name_prefix, 'users.account');
+        $this->assertEquals($route->name, 'profiles.item');
+        $this->assertEquals($route->full_name, 'users.account.profiles.item');
+
+        $this->assertEquals($route->path_prefix, 'users/{user_id}/account');
+        $this->assertEquals($route->path, 'pofiles/{item_name}/{item_prototype}');
+        $this->assertEquals($route->full_path, 'users/{user_id}/account/pofiles/{item_name}/{item_prototype}');
+
+        $this->assertEquals($route->tokens, ['user_id' => '\d+', 'item_prototype' => 'name|value']);
+        $this->assertEquals($route->full_regex, 'users\/(\d+)\/account\/pofiles\/(\w+)\/(name|value)');
+
+        $this->assertEquals($route->methods, ['GET', 'OPTIONS', 'HEADER']);
+
+        $this->assertEquals($route->param_sources, ['uri', 'get', 'post', 'file']);
+    }
+
+    /**
+
+    public function testMethod()
     {
         $route->path_prefix('/users/')->path('{user_id}/account/{profiles_item}');
 
-        $this->assertEquals($this->name_prefix, 'users');
-        $this->assertEquals($this->name, 'account.profiles');
-        $this->assertEquals($this->full_name, 'users.account.profiles');
-
-        $this->assertEquals($this->path_prefix, 'users');
-        $this->assertEquals($this->path, '{user_id}/account/{profiles_item}');
-        $this->assertEquals($this->full_path, 'users/{user_id}/account/{profiles_item}');
 
         return $route;
     }
 
-    /**
-     * @depends testPath
-     */
-    public function testRegex()
-    {
-        $route->tokens('user_id', '\d+');
-
-        $this->assertEquals($this->full_regex, "users/(\d+)/account/('\w+)");
-
-        return $route;
-    }
-
-    /**
-     * @depends testMethod
-     */
-    public function testMethod()
-    {
-        $route
-
-        $this->assertEquals($this->methods, ["GET", "OPTIONS", "HEADER"]);
-
-        return $route;
-    }
-
-    /**
-     * @depends testMethod
-     */
-    public function testMethod()
+    public function testMethod2()
     {
         $route->methods('get')->methods(['options', 'header']);
 
-        $this->assertEquals($this->methods, ["GET", "OPTIONS", "HEADER"]);
 
         return $route;
     }
+     */
 }

@@ -46,11 +46,11 @@ class Route implements RouteInterface
     protected function judgeValidSource(string $source)
     {
         switch ($source) {
-            case "uri":
-            case "get":
-            case "post":
-            case "file":
-            case "cookie":
+            case 'uri':
+            case 'get':
+            case 'post':
+            case 'file':
+            case 'cookie':
                 return true;
             default:
                 return false;

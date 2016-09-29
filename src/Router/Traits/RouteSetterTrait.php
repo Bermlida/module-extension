@@ -118,10 +118,10 @@ trait RouteSetterTrait
 
     public function __call($name, $arguments)
     {
-        if (strpos('_', $name) !== false) {
+        if (strpos($name, '_') !== false) {
             $name = implode(array_map(
                 function ($segment) {
-                    return ucfirst(strtolower($segment))
+                    return ucfirst(strtolower($segment));
                 },
                 explode('_', $name)
             ));

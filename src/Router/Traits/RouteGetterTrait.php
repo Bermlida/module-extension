@@ -18,11 +18,12 @@ trait RouteGetterTrait
 
     protected function getFullRegex()
     {
+        $tokens = $this->tokens;
         $regex = preg_replace_callback(
             '/\{(\w+)\}/',
-            function (array $matches) use ($this) {
+            function (array $matches) use ($tokens) {
                 $token = $matches[1];
-                return '(' .  ($this->tokens[$token] ?? '\w+') . ')';
+                return '(' .  ($tokens[$token] ?? '\w+') . ')';
             },
             str_replace('/', '\/', $this->getFullPath())
         );
@@ -50,22 +51,22 @@ trait RouteGetterTrait
 
     public function __get($name) 
     {        
-        if (strpos('_', $name) !== false) {
-            $name = implode(array_map(
+        if (strpos($name, '_') !== false) {
+            $method_name = implode(array_map(
                 function ($segment) {
-                    return ucfirst(strtolower($segment))
+                    return ucfirst(strtolower($segment));
                 },
                 explode('_', $name)
             ));
         } else {
-            $name = ucfirst($name);
+            $method_name = ucfirst($name);
         }
 
-        $method = 'get' . $name;
+        $method = 'get' . $method_name;
         if (method_exists($this, $method)) {
             return $this->$method();
         } else {
-            return isset($this->$name) ?? $this->$name : null;
+            return isset($this->$name) ? $this->$name : null;
         }
     }
 }
