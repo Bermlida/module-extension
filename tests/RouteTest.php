@@ -43,6 +43,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $route->handler($handler);
 
         $this->assertEquals($route->handler, $handler);
+        $this->assertEquals(is_callable($route->handler_resolve), true);
 
         return $route;
     }
