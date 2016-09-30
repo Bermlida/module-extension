@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7eb80d6e2df6b04209e1276aa62f411a",
-    "content-hash": "c78bc2951eb34b02bd93649ee23cc163",
+    "hash": "f049cd7b74c31c5561c12db8c9c3c1e1",
+    "content-hash": "12ca0a2fd84cdbf834ee83a2979d9484",
     "packages": [
         {
             "name": "psr/http-message",
@@ -154,6 +154,62 @@
                 "object graph"
             ],
             "time": "2016-09-16 13:37:59"
+        },
+        {
+            "name": "phly/http",
+            "version": "0.14.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phly/http.git",
+                "reference": "0d02d98106caf418a6b4031f2bf5fce3293faddc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phly/http/zipball/0d02d98106caf418a6b4031f2bf5fce3293faddc",
+                "reference": "0d02d98106caf418a6b4031f2bf5fce3293faddc",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.8",
+                "psr/http-message": "~1.0"
+            },
+            "provide": {
+                "psr/http-message-implementation": "~1.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.6",
+                "squizlabs/php_codesniffer": "~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev",
+                    "dev-develop": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Phly\\Http\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Matthew Weier O'Phinney",
+                    "email": "matthew@weierophinney.net",
+                    "homepage": "http://mwop.net"
+                }
+            ],
+            "description": "PSR HTTP Message implementations",
+            "homepage": "https://github.com/phly/http",
+            "keywords": [
+                "http"
+            ],
+            "abandoned": "zendframework/zend-diactoros",
+            "time": "2015-05-21 16:24:51"
         },
         {
             "name": "phpdocumentor/reflection-common",

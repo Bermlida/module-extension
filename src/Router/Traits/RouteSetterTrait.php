@@ -109,7 +109,7 @@ trait RouteSetterTrait
         }
         
         if ($judge_result) {
-            $this->$param_handlers = array_merge($original_handlers, $handlers);
+            $this->param_handlers = array_merge($original_handlers, $handlers);
             return $this;
         } else {
             throw new RuntimeException('');
