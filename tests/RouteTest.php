@@ -1,25 +1,10 @@
 <?php
 
 use Vista\Router\Route;
+use Phly\Http\ServerRequest;
 
 class RouteTest extends PHPUnit_Framework_TestCase
 {
-    // public function handlerProvider()
-    // {
-    //     return [
-    //         [
-    //             function () {
-    //                 print 'test';
-    //             }
-    //         ],
-    //         [[$this]],
-    //         [['stdClass']],
-    //         [['stdClass', 'test']],
-    //         [[$this, 'test']]
-    //     ];
-    // }
-/*
-*/
     public function handlerProvider()
     {
         return [
@@ -42,21 +27,26 @@ class RouteTest extends PHPUnit_Framework_TestCase
             [[new TestHandlerD(), 'processWithModel']]
         ];
     }
-
-    /**
-     * @dataProvider handlerProvider
-     */
-    public function testSetter($handler)
+    
+    public function requestProvider()
     {
-        $route = new Route();
-        
+        return [
+            []
+        ]
+    }
+
+    public function setRoutePrototype(Route $route, $handler)
+    {
         $route
             ->name_prefix('users.account.')->name('.profiles.item')
             ->path_prefix('/users/{user_id}/account/')->path('/pofiles/{item_name}/{item_prototype}')
             ->tokens('user_id', '\d+')->tokens(['item_prototype' => 'name|value'])
             ->methods('get')->methods(['options', 'header'])
             ->handler($handler);
+    }
 
+    public function setRouteParams(Route $route)
+    {
         $route
             ->param_sources('Uri')->param_sources(['get', 'post', 'file'])
             ->param_handlers([
@@ -68,21 +58,37 @@ class RouteTest extends PHPUnit_Framework_TestCase
             ->param_handlers('user_id', function ($param) {
                     return (object)$param;
                 });
-
-        return $route;
     }
 
-    /**
-    public function init()
+    
+    public function init($handler)
     {
         $route = new Route();
         
+        $this->setRoutePrototype($route, $handler);
+
+        $this->setRouteParams($route);
         
         return $route;
     }
-     */
-    public function testGetter(Route $route)
+    
+    public function requestProvider()
     {
+        $request = (new Request())
+                                ->withUri(new Phly\Http\Uri('http://example.com'))
+                                ->withMethod('PATCH')
+                                ->withAddedHeader('Authorization', 'Bearer ' . $token)
+                                ->withAddedHeader('Content-Type', 'application/json');
+
+        return $request;
+    }
+    /**
+     *  @dataProvider handlerProvider
+     */
+    public function testGetter($handler)
+    {
+        $route = $this->init($handler);
+
         $this->assertEquals($route->name_prefix, 'users.account');
         $this->assertEquals($route->name, 'profiles.item');
         $this->assertEquals($route->full_name, 'users.account.profiles.item');
@@ -100,28 +106,39 @@ class RouteTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * 
+     * @dataProvider handlerProvider
      * 
      */
-    public function testSetHandler()
+    public function testMatchUri($handler)
     {
-        // $route->handler($handler);
-        // $route->param_handlers()
+        $route = $this->init($handler);
 
-        // $this->assertEquals($route->handler, $handler);
-        // $this->assertEquals(is_callable($route->handler_resolve), true);
-
-        // return $route;
-        // $route
+        $this->assertEquals($route->matchUri($request), true);
+        // return;
         // $route->methods('get')->methods(['options', 'header']);
-            
-            
-        // $this->assertEquals($route)
+        // return 
+        // return 
+    }
 
-        // return $route;
-
-        // return $route;
+    /**
+     * @dataProvider handlerProvider
+     * 
+     */
+    public function testMatchMethod()
+    {
+        $route = $this->init($handler);
+        
+        $this->assertEquals($route->matchMethod($request), true);
     }
     
-
+    /**
+     * @dataProvider handlerProvider
+     * 
+     */
+    public function testExecuteHandler()
+    {
+        $route = $this->init($handler);
+        
+        $this->assertEquals($route->executeHandler($request), null);
+    }
 }
