@@ -5,7 +5,19 @@ use Phly\Http\ServerRequest;
 
 class RouteTest extends PHPUnit_Framework_TestCase
 {
-    public function handlerProvider()
+    public function requestProvider()
+    {
+        return array_map([$this, 'getRequest'], [
+            [
+                'uri' => '/users/55/account/profiles/picture/name',
+                'method' => 'get',
+                'query' => ['sort' => 22],
+                'parsed_body' => ['top' => 33]
+            ]
+        ]);
+    }
+
+    public function getHandlers()
     {
         return [
             [
@@ -27,28 +39,79 @@ class RouteTest extends PHPUnit_Framework_TestCase
             [[new TestHandlerD(), 'processWithModel']]
         ];
     }
-    
-    public function requestProvider()
+
+    public function testRoute()
     {
-        return [
-            []
-        ]
+        $route = new Route();
+        
+        $this->setRoutePrototype($route);
+
+        $this->setRouteParams($route);
+        
+        return $route;
+    }
+    
+    /**
+     * @depends testRoute
+     */
+    public function testGetter(Route $route)
+    {
+        $this->assertEquals($route->name_prefix, 'users.account');
+        $this->assertEquals($route->name, 'profiles.item');
+        $this->assertEquals($route->full_name, 'users.account.profiles.item');
+
+        $this->assertEquals($route->path_prefix, 'users/{user_id}/account');
+        $this->assertEquals($route->path, 'profiles/{item_name}/{item_prototype}');
+        $this->assertEquals($route->full_path, 'users/{user_id}/account/profiles/{item_name}/{item_prototype}');
+
+        $this->assertEquals($route->tokens, ['user_id' => '\d+', 'item_prototype' => 'name|value']);
+        $this->assertEquals($route->full_regex, 'users\/(\d+)\/account\/profiles\/(\w+)\/(name|value)');
+
+        $this->assertEquals($route->methods, ['get', 'options', 'header']);
+
+        $this->assertEquals($route->param_sources, ['uri', 'get', 'post', 'file']);
     }
 
-    public function setRoutePrototype(Route $route, $handler)
+    /**
+     * @dataProvider requestProvider
+     * @depends testRoute
+     */
+    public function testMatchUri(ServerRequest $request, Route $route)
+    {
+        $this->assertEquals($route->matchUri($request), true);
+        // return return'get'->methods(['options', 'header']);
+    }
+
+    /**
+     * @dataProvider requestProvider
+     * @depends testRoute
+     */
+    public function testMatchMethod(ServerRequest $request, Route $route)
+    {
+        $this->assertEquals($route->matchMethod($request), true);
+    }
+
+/*
+    public function testExecuteHandler()
+    {  $this->markTestSkipped();
+        $route = $this->init($handler);
+        
+        $this->assertEquals($route->executeHandler($request), null);
+    }
+*/
+    protected function setRoutePrototype(Route $route)
     {
         $route
             ->name_prefix('users.account.')->name('.profiles.item')
-            ->path_prefix('/users/{user_id}/account/')->path('/pofiles/{item_name}/{item_prototype}')
+            ->path_prefix('/users/{user_id}/account/')->path('/profiles/{item_name}/{item_prototype}')
             ->tokens('user_id', '\d+')->tokens(['item_prototype' => 'name|value'])
-            ->methods('get')->methods(['options', 'header'])
-            ->handler($handler);
+            ->methods('get')->methods(['options', 'header']);
     }
 
-    public function setRouteParams(Route $route)
+    protected function setRouteParams(Route $route)
     {
         $route
-            ->param_sources('Uri')->param_sources(['get', 'post', 'file'])
+            ->param_sources('uri')->param_sources(['get', 'post', 'file'])
             ->param_handlers([
                     'item_name' => ['TestParamHandlerA'],
                     'item_prototype' => [new TestParamHandlerB()]
@@ -60,85 +123,17 @@ class RouteTest extends PHPUnit_Framework_TestCase
                 });
     }
 
-    
-    public function init($handler)
+    protected function getRequest(array $params)
     {
-        $route = new Route();
-        
-        $this->setRoutePrototype($route, $handler);
+        $request_params = [
+            'REQUEST_URI' => $params['uri'],
+            'REQUEST_METHOD' => $params['method']
+        ];
 
-        $this->setRouteParams($route);
-        
-        return $route;
-    }
-    
-    public function requestProvider()
-    {
-        $request = (new Request())
-                                ->withUri(new Phly\Http\Uri('http://example.com'))
-                                ->withMethod('PATCH')
-                                ->withAddedHeader('Authorization', 'Bearer ' . $token)
-                                ->withAddedHeader('Content-Type', 'application/json');
-
-        return $request;
-    }
-    /**
-     *  @dataProvider handlerProvider
-     */
-    public function testGetter($handler)
-    {
-        $route = $this->init($handler);
-
-        $this->assertEquals($route->name_prefix, 'users.account');
-        $this->assertEquals($route->name, 'profiles.item');
-        $this->assertEquals($route->full_name, 'users.account.profiles.item');
-
-        $this->assertEquals($route->path_prefix, 'users/{user_id}/account');
-        $this->assertEquals($route->path, 'pofiles/{item_name}/{item_prototype}');
-        $this->assertEquals($route->full_path, 'users/{user_id}/account/pofiles/{item_name}/{item_prototype}');
-
-        $this->assertEquals($route->tokens, ['user_id' => '\d+', 'item_prototype' => 'name|value']);
-        $this->assertEquals($route->full_regex, 'users\/(\d+)\/account\/pofiles\/(\w+)\/(name|value)');
-
-        $this->assertEquals($route->methods, ['GET', 'OPTIONS', 'HEADER']);
-
-        $this->assertEquals($route->param_sources, ['uri', 'get', 'post', 'file']);
-    }
-
-    /**
-     * @dataProvider handlerProvider
-     * 
-     */
-    public function testMatchUri($handler)
-    {
-        $route = $this->init($handler);
-
-        $this->assertEquals($route->matchUri($request), true);
-        // return;
-        // $route->methods('get')->methods(['options', 'header']);
-        // return 
-        // return 
-    }
-
-    /**
-     * @dataProvider handlerProvider
-     * 
-     */
-    public function testMatchMethod()
-    {
-        $route = $this->init($handler);
-        
-        $this->assertEquals($route->matchMethod($request), true);
-    }
-    
-    /**
-     * @dataProvider handlerProvider
-     * 
-     */
-    public function testExecuteHandler()
-    {
-        $route = $this->init($handler);
-        
-        $this->assertEquals($route->executeHandler($request), null);
+        $request = (new ServerRequest($request_params))
+                                ->withQueryParams(($params['query'] ?? []))
+                                ->withParsedBody(($params['parsed_body'] ?? []))
+                                ->withUploadedFiles(($params['uploaded_files'] ?? []));
+        return [$request];
     }
 }

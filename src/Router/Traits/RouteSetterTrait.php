@@ -58,7 +58,8 @@ trait RouteSetterTrait
     {
         $judge_result = false;
         if (is_string($methods) || is_array($methods)) {
-            $methods = array_map('strtoupper', (is_string($methods) ? [$methods] : $methods));
+            // $methods = array_map('strtoupper', (is_string($methods) ? [$methods] : $methods));
+            $methods = is_string($methods) ? [$methods] : $methods;
             $judge_result = !in_array(false, array_map([$this, 'judgeValidMethod'], $methods));
         }
         
@@ -85,7 +86,8 @@ trait RouteSetterTrait
     {
         $judge_result = false;
         if (is_string($sources) || is_array($sources)) {
-            $sources = array_map('strtolower', (is_string($sources) ? [$sources] : $sources));
+            // $sources = array_map('strtolower', (is_string($sources) ? [$sources] : $sources));
+            $sources = is_string($sources) ? [$sources] : $sources;
             $judge_result = !in_array(false, array_map([$this, 'judgeValidSource'], $sources));
         }
         
