@@ -146,7 +146,7 @@ class Route implements RouteInterface
                             $arguments[$key] = $value;
                         }
                     }
-                    $arguments = [$reflector->newInstanceArgs($arguments)];
+                    $arguments = [$reflector->newInstanceArgs(($arguments ?? []))];
                 }
             } else {
                 foreach ($parameters as $key => $parameter) {
@@ -184,13 +184,13 @@ class Route implements RouteInterface
     protected function resolveUriSource(string $uri)
     {
         $uri_path = trim(parse_url($uri)['path'], '/');
-        $key_result = preg_match('/\{(\w+)\}/', $this->full_path, $key_matches);
+        $key_result = preg_match_all('/\{(\w+)\}/', $this->full_path, $key_matches);
         $value_result = preg_match('/' . $this->full_regex . '/', $uri_path, $value_matches);
-
-        if ($key_result === 1 && $value_result === 1) {
-            unset($key_matches);
-            unset($value_matches);
-            return array_combine($key_matches, $value_matches);
+        
+        if ($key_result >= 1 && $value_result === 1) {
+            unset($key_matches[0]);
+            unset($value_matches[0]);
+            return array_combine($key_matches[1], $value_matches);
         }
         return [];
     }

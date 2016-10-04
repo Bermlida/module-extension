@@ -17,26 +17,23 @@ class RouteTest extends PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function getHandlers()
+    public function testHandlers()
     {
         return [
-            [
-                function ($user_id) {
-                    print 'in anonymous with param';
-                }
-            ],
-            [
-                function (TestRouteModel $model) {
-                    print 'in anonymous with param';
-                    var_dump($model);
-                }
-            ],
-            [['TestHandlerA']],
-            [[new TestHandlerB()]],
-            [['TestHandlerC', 'process']],
-            [['TestHandlerC', 'processWithModel']],
-            [[new TestHandlerD(), 'process']],
-            [[new TestHandlerD(), 'processWithModel']]
+            function ($user_id) {
+                var_dump('in anonymous with param');
+                var_dump($user_id);
+            },
+            function (TestRouteModel $model) {
+                var_dump('in anonymous with model');
+                var_dump($model);
+            },
+            ['TestHandlerA'],
+            [new TestHandlerB()],
+            ['TestHandlerC', 'process'],
+            ['TestHandlerC', 'processWithModel'],
+            [new TestHandlerD(), 'process'],
+            [new TestHandlerD(), 'processWithModel']
         ];
     }
 
@@ -79,7 +76,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
     public function testMatchUri(ServerRequest $request, Route $route)
     {
         $this->assertEquals($route->matchUri($request), true);
-        // return return'get'->methods(['options', 'header']);
+        //'get'->methods(['options', 'header']);
     }
 
     /**
@@ -91,14 +88,20 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($route->matchMethod($request), true);
     }
 
-/*
-    public function testExecuteHandler()
-    {  $this->markTestSkipped();
-        $route = $this->init($handler);
+    /**
+     * @dataProvider requestProvider
+     * @depends testRoute
+     * @depends testHandlers
+     */
+    public function testExecuteHandler(ServerRequest $request, Route $route, array $handlers)
+    {
+        foreach ($handlers as $handler) {
+            $route->handler($handler);
         
-        $this->assertEquals($route->executeHandler($request), null);
+            $this->assertEquals($route->executeHandler($request), null);
+        }
     }
-*/
+
     protected function setRoutePrototype(Route $route)
     {
         $route
