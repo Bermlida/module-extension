@@ -4,7 +4,11 @@ class TestHandlerA
 {
     public function __invoke(string $item_name)
     {
-        var_dump('in TestHandlerA with item_name value: ' . $item_name);
+        return [
+            'method' => __METHOD__,
+            'name' => 'item_name',
+            'value' => $item_name
+        ];
     }
 }
 
@@ -12,7 +16,11 @@ class TestHandlerB
 {
     public function __invoke(string $item_prototype)
     {
-        var_dump('in TestHandlerA with item_prototype value: ' . $item_prototype);
+        return [
+            'method' => __METHOD__,
+            'name' => 'item_prototype',
+            'value' => $item_prototype
+        ];
     }
 }
 
@@ -20,29 +28,40 @@ class TestHandlerC
 {
     public function process($user_id)
     {
-        var_dump('in TestHandlerC::processWithModel with user_id value: ');
-        var_dump($user_id);
+        return [
+            'method' => __METHOD__,
+            'name' => 'user_id',
+            'value' => $user_id
+        ];
     }
 
     public function processWithModel(TestRouteModel $model)
     {
-        var_dump('in TestHandlerC::processWithModel with model: ');
-        var_dump($model);
+        return [
+            'method' => __METHOD__,
+            'name' => 'model',
+            'value' => $model
+        ];
     }
 }
 
 class TestHandlerD
 {
-    public function process(string $item_name, string $item_prototype)
+    public function process($sort, $top)
     {
-        var_dump('in TestHandlerD::processWithModel with item_name and item_prototype');
-        var_dump('item_name: ' . $item_name);
-        var_dump('item_prototype' . $item_prototype);
+        return [
+            'method' => __METHOD__,
+            'name' => 'sort_top',
+            'value' => ['sort' => $sort, 'top' => $top]
+        ];
     }
 
     public function processWithModel(TestRouteModel $model)
     {
-        var_dump('in TestHandlerD::processWithModel with model: ');
-        var_dump($model);
+        return [
+            'method' => __METHOD__,
+            'name' => 'model',
+            'value' => $model
+        ];
     }
 }

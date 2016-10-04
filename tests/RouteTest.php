@@ -20,13 +20,19 @@ class RouteTest extends PHPUnit_Framework_TestCase
     public function testHandlers()
     {
         return [
-            function ($user_id) {
-                var_dump('in anonymous with param');
-                var_dump($user_id);
+            function ($sort) {
+                return [
+                    'method' => 'anonymous',
+                    'name' => 'sort',
+                    'value' => $sort
+                ];
             },
             function (TestRouteModel $model) {
-                var_dump('in anonymous with model');
-                var_dump($model);
+                return [
+                    'method' => 'anonymous with model',
+                    'name' => 'model',
+                    'value' => $model
+                ];
             },
             ['TestHandlerA'],
             [new TestHandlerB()],
@@ -76,7 +82,6 @@ class RouteTest extends PHPUnit_Framework_TestCase
     public function testMatchUri(ServerRequest $request, Route $route)
     {
         $this->assertEquals($route->matchUri($request), true);
-        //'get'->methods(['options', 'header']);
     }
 
     /**
@@ -98,7 +103,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
         foreach ($handlers as $handler) {
             $route->handler($handler);
         
-            $this->assertEquals($route->executeHandler($request), null);
+            var_dump($route->executeHandler($request));
         }
     }
 
