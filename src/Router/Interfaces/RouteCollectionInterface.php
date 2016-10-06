@@ -5,6 +5,7 @@ namespace Vista\Router\Interfaces;
 use Countable;
 use ArrayAccess;
 use IteratorAggregate;
+use Vista\Router\Interfaces\RouteInterface;
 
 interface RouteCollectionInterface extends ArrayAccess, IteratorAggregate, Countable
 {
@@ -12,9 +13,9 @@ interface RouteCollectionInterface extends ArrayAccess, IteratorAggregate, Count
 
     public function getRoutes();
 
-    public function removeRoute(string $name, $methods = null);
+    public function removeRoutes();
 
-    public function setRoute(Route $route);
+    public function setRoute(RouteInterface $route);
 
     public function getRoute(string $name, $methods = null);
 

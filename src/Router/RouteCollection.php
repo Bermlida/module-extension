@@ -2,6 +2,8 @@
 
 namespace Vista\Router;
 
+use ArrayIterator;
+use Vista\Router\Interfaces\RouteInterface;
 use Vista\Router\Interfaces\RouteCollectionInterface;
 use Vista\Router\Traits\RouteCollectionTrait;
 
@@ -13,10 +15,14 @@ class RouteCollection implements RouteCollectionInterface
 
     public function offsetSet($offset, $value)
     {
-        if (is_string($offset) && $offset !== "" && is_a($value, Vista\Router\Route::class)) {
-            $value->name($offset);
+/*
+        if (is_string($offset) && $offset !== '') {
+            $implements = class_implements($value);
+            if (in_array(RouteInterface::class, $implements)) {
+                $value->name($offset);
+            }
         }
-
+*/
         $this->setRoute($value);
     }
 
@@ -42,6 +48,6 @@ class RouteCollection implements RouteCollectionInterface
 
     public function count()
     {
-        count($this->routes);
+        return count($this->routes);
     }
 }

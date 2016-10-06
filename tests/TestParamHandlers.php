@@ -31,12 +31,3 @@ class TestParamHandlerD
         return $param / 10;
     }
 }
-/*
- implements ArrayAccess
-private $container = array();
-$obj = new obj();
-$obj['key'] = new abc();
-use Vista\Router\Interfaces\RouteModelInterface;
-
-        //'get'->methods(['options', 'header']);
-*/

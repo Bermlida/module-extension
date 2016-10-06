@@ -24,21 +24,26 @@ trait RouteCollectionTrait
     
     public function setRoute(RouteInterface $route)
     {
+        $name_is_empty = empty($full_name = $route->full_name);
+
         foreach ($this->routes as $current_route) {
             $compare_path = $current_route->full_path == $route->full_path;
             $compare_methods = !empty(array_intersect($route->methods, $current_route->methods));
-            $compare_name = ($current_route->full_name == $route->full_name) && !empty($route->full_name);
+            $compare_name = ($current_route->full_name == $route->full_name) && !$full_name_empty;
 
             if ($compare_path && $compare_methods && $compare_name) {
                 throw new RuntimeException('');
             }
         }
-        
-        if (!empty($route->full_name)) {
+
+        $this->routes[] = $route;
+/*
+        if (!$full_name_empty) {
             $this->routes[$route->full_name] = $route;
         } else {
             $this->routes[] = $route;
         }
+*/
     }
 
     public function getRoute(string $name, $methods = null)
@@ -61,7 +66,7 @@ trait RouteCollectionTrait
             $key = $name;
         }
 
-        if ((is_numeric($key) && $key > 0) || isset($key)) {
+        if (isset($key) && $key > 0) {
             unset($this->routes[$key]);
         } else {
             throw new RuntimeException('');
