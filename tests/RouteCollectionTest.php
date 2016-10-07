@@ -24,7 +24,7 @@ class RouteCollectionTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testOffsetSet
+     * @depends clone testOffsetSet
      */
     public function testOffsetExists(RouteCollection $collection)
     {
@@ -34,7 +34,7 @@ class RouteCollectionTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testOffsetSet
+     * @depends clone testOffsetSet
      */
     public function testOffsetGet(RouteCollection $collection)
     {
@@ -44,7 +44,7 @@ class RouteCollectionTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testOffsetSet
+     * @depends clone testOffsetSet
      * @expectedException RuntimeException
      */
     public function testOffsetUnset(RouteCollection $collection)
@@ -55,7 +55,7 @@ class RouteCollectionTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testOffsetSet
+     * @depends clone testOffsetSet
      */
     public function testGetIterator(RouteCollection $collection)
     {
@@ -63,7 +63,7 @@ class RouteCollectionTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testOffsetSet
+     * @depends clone testOffsetSet
      */
     public function testCount(RouteCollection $collection)
     {
