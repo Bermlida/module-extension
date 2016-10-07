@@ -14,5 +14,5 @@ class TestRouteModel implements RouteModelInterface
     }
 }
 /*
-use Vista\Router\Interfaces\RouteModelInterface;
+private private private private private private NULL ,  , , ,   , 
 */

@@ -50,7 +50,7 @@ trait RouteGetterTrait
     }
 
     public function __get($name) 
-    {        
+    {
         if (strpos($name, '_') !== false) {
             $method_name = implode(array_map(
                 function ($segment) {

@@ -1,5 +1,6 @@
 ﻿<?php
 //flowfunc + approve_1 改寫工程
+use Vista\Router\Traits\RouteTrait;
 
 class RouteTraitTest extends PHPUnit_Framework_TestCase
 {
@@ -32,8 +33,13 @@ class RouteTraitTest extends PHPUnit_Framework_TestCase
     {
         //
     }
-        
-    private function setStubMethod($stub)
+
+    public function testHandlerResolve( )
+    {
+        //
+    }
+
+    private function getResolveHandlerMethod()
     {
         //
     }
