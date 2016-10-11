@@ -26,19 +26,26 @@ class RouteTraitTest extends PHPUnit_Framework_TestCase
 
         $stub->param_sources = ['get', 'post', 'file'];
         $stub->param_handlers = [
-            '' => function () {
-
+            'sort' => function ($param) {
+                return $param * 10;
             },
-            '' => function () {
-
+            'top' => function ($param) {
+                return $param / 10;
             }
         ];
-        $stub->handler = function () {
-
+        $stub->handler = function ($sort, $top) {
+            if ($sort > 100 && $top < 10) {
+                return 'correct value';
+            } else {
+                return 'error value';
+            }
         };
 
         $this->setResolveHandlerMethod($stub);
         $this->setResolveSourcesMethod($stub);
+        $this->setHandleParams($stub);
+        $this->setBindArguments($stub);
+        $this->setCallHandler($stub);
 
         return $stub;
     }
@@ -67,6 +74,7 @@ class RouteTraitTest extends PHPUnit_Framework_TestCase
      */
     public function testExecuteHandler($request , $stub)
     {
+        $this->assertEquals($stub->executeHandler($request), 'correct value');
     }
 
     private function getRequest(array $params)
@@ -116,14 +124,14 @@ class RouteTraitTest extends PHPUnit_Framework_TestCase
     {
         $stub->method('handleParams')->will(
             $this->returnCallback(
-                function ($request) {
-                    $items = [];
+                function ($params) use ($stub) {
+                    foreach ($params as $key => $value) {
+                        if (isset($stub->param_handlers[$key])) {
+                            $params[$key] = $stub->param_handlers[$key]($value);
+                        }
+                    }
 
-                    $items = array_merge($items, $request->getUploadedFiles());
-                    $items = array_merge($items, $request->getParsedBody());
-                    $items = array_merge($items, $request->getQueryParams());
-
-                    return $items;
+                    return $params;
                 }
             )
         );
@@ -131,11 +139,26 @@ class RouteTraitTest extends PHPUnit_Framework_TestCase
 
     private function setBindArguments($stub)
     {
-
+        $stub->method('bindArguments')->will(
+            $this->returnCallback(
+                function ($params) {
+                    return [
+                        0 => $params['sort'] ?? null,
+                        1 => $params['top'] ?? null
+                    ];
+                }
+            )
+        );
     }
 
     private function setCallHandler($stub)
     {
-
+        $stub->method('callHandler')->will(
+            $this->returnCallback(
+                function ($handler, $arguments) {
+                    return $handler($arguments[0], $arguments[1]);
+                }
+            )
+        );
     }
 }
