@@ -80,9 +80,9 @@ abstract class RouteDispatcherPrototype implements RouteDispatcherInterface
     protected function executeDefaultHandle(ServerRequestInterface $request)
     {
         $uri = $request->getServerParams()['REQUEST_URI'];
-        $uri_path = trim(parse_url($uri)['path'], '/');
-        $segments = explode('/', $uri_path);
-        
+        $uri_path = parse_url($uri)['path'];
+        $segments = explode('/', trim($uri_path, '/'));
+
         $method = array_pop($segments);
         
         foreach ($segments as $key => $segment) {

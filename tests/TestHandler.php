@@ -9,6 +9,6 @@ class TestHandler
     public function process(ServerRequestInterface $request)
     {
         return $request;
-            // $this->getDefaultHandleParams(),, $param, $request, $stub[]
+            // ,,
     }
 }
