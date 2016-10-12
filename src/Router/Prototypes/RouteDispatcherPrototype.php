@@ -23,7 +23,7 @@ abstract class RouteDispatcherPrototype implements RouteDispatcherInterface
 
     public function default(string $root_namespace)
     {
-        $this->root_namespace = $root_namespace;
+        $this->root_namespace = trim($root_namespace, '\\');
         $this->cache_handle_type = 'Default';
         $this->executed = false;
         return $this;
@@ -99,18 +99,20 @@ abstract class RouteDispatcherPrototype implements RouteDispatcherInterface
             }
             $segments[$key] = $segment;
         }
-        $class = $this->root_namespace . '/' . implode('/', $segments);
+        $class = $this->root_namespace . '\\' . implode('\\', $segments);
 
         if (class_exists($class) && method_exists($class, $method)) {
             $this->executed = true;
-            $this->result = call_user_func([$class, $method]);
+            $this->result = call_user_func([$class, $method], $request);
         } else {
             $this->executed = false;
         }
     }
 
     protected function executeRuleHandle(ServerRequestInterface $request)
-    {        
+    {
+        $this->executed = false;
+        
         foreach ($this->rules as $rule) {
             $judge_uri = $rule->matchUri($request);
             $judge_method = $rule->matchMethod($request);
@@ -120,7 +122,5 @@ abstract class RouteDispatcherPrototype implements RouteDispatcherInterface
                 $this->result = $rule->executeHandler($request);
             }
         }
-        
-        $this->executed = false;
     }
 }
