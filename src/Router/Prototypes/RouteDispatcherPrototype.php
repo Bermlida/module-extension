@@ -3,9 +3,9 @@
 namespace Vista\Router\Prototypes;
 
 use RuntimeException;
-use Vista\Router\Interfaces\RouteDispatcherInterface;
-use Vista\Router\Interfaces\RouteCollectionInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Vista\Router\Interfaces\RouteCollectionInterface;
+use Vista\Router\Interfaces\RouteDispatcherInterface;
 
 abstract class RouteDispatcherPrototype implements RouteDispatcherInterface
 {
@@ -20,6 +20,12 @@ abstract class RouteDispatcherPrototype implements RouteDispatcherInterface
     protected $executed = false;
 
     protected $result;
+
+    abstract protected function getClass(ServerRequestInterface $request);
+
+    abstract protected function getMethod(ServerRequestInterface $request);
+
+    abstract protected function bindArguments(array $handler, ServerRequestInterface $request);
 
     public function default(string $root_namespace)
     {
@@ -79,6 +85,7 @@ abstract class RouteDispatcherPrototype implements RouteDispatcherInterface
 
     protected function executeDefaultHandle(ServerRequestInterface $request)
     {
+/*
         $uri = $request->getServerParams()['REQUEST_URI'];
         $uri_path = parse_url($uri)['path'];
         $segments = explode('/', trim($uri_path, '/'));
@@ -100,10 +107,14 @@ abstract class RouteDispatcherPrototype implements RouteDispatcherInterface
             $segments[$key] = $segment;
         }
         $class = $this->root_namespace . '\\' . implode('\\', $segments);
+*/
+        $class = $this->getClass($request);
+        $method = $this->getMethod($request);
+        $arguments = $this->bindArguments([$class, $method], $request);
 
         if (class_exists($class) && method_exists($class, $method)) {
             $this->executed = true;
-            $this->result = call_user_func([$class, $method], $request);
+            $this->result = call_user_func_array([$class, $method], $arguments);
         } else {
             $this->executed = false;
         }

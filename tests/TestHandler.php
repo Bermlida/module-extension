@@ -9,6 +9,5 @@ class TestHandler
     public function process(ServerRequestInterface $request)
     {
         return $request;
-            // ,,
     }
 }

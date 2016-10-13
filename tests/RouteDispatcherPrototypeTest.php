@@ -21,10 +21,13 @@ class RouteDispatcherPrototypeTest extends PHPUnit_Framework_TestCase
     {
         extract($this->getDefaultHandleParams());
 
+        $stub->method('getClass')->willReturn('\Vista\Router\Tests\Handlers\TestHandler');
+        $stub->method('getMethod')->willReturn('process');
+        $stub->method('bindArguments')->willReturn([$request]);
+
         $stub->default($param)->handle($request);
-
+        
         $this->assertEquals($stub->executed(), true);
-
         $this->assertEquals($stub->result(), $request);
     }
 
