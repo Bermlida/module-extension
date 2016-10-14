@@ -21,7 +21,7 @@ class RouteDispatcherPrototypeTest extends PHPUnit_Framework_TestCase
     {
         extract($this->getDefaultHandleParams());
 
-        $stub->method('getClass')->willReturn('\Vista\Router\Tests\Handlers\TestHandler');
+        $stub->method('getClass')->willReturn('TestHandler');
         $stub->method('getMethod')->willReturn('process');
         $stub->method('bindArguments')->willReturn([$request]);
 
@@ -54,7 +54,7 @@ class RouteDispatcherPrototypeTest extends PHPUnit_Framework_TestCase
 
         $request = $this->getRequest([
             'uri' => '/test_handler/process',
-            'method' => 'post',
+            'method' => 'get',
             'query' => ['var_get' => 123456],
             'parsed_body' => ['var_post' => 987654]
         ]);

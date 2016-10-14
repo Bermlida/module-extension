@@ -47,7 +47,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
     {
         $route = new Route();
         
-        $this->setRoutePrototype($route);
+        $this->setRouteProperty($route);
 
         $this->setRouteParams($route);
         
@@ -64,10 +64,10 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($route->full_name, 'users.account.profiles.item');
 
         $this->assertEquals($route->path_prefix, 'users/{user_id}/account');
-        $this->assertEquals($route->path, 'profiles/{item_name}/{item_prototype}');
-        $this->assertEquals($route->full_path, 'users/{user_id}/account/profiles/{item_name}/{item_prototype}');
+        $this->assertEquals($route->path, 'profiles/{item_name}/{item_property}');
+        $this->assertEquals($route->full_path, 'users/{user_id}/account/profiles/{item_name}/{item_property}');
 
-        $this->assertEquals($route->tokens, ['user_id' => '\d+', 'item_prototype' => 'name|value']);
+        $this->assertEquals($route->tokens, ['user_id' => '\d+', 'item_property' => 'name|value']);
         $this->assertEquals($route->full_regex, 'users\/(\d+)\/account\/profiles\/(\w+)\/(name|value)');
 
         $this->assertEquals($route->methods, ['get', 'options', 'header']);
@@ -107,12 +107,12 @@ class RouteTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    protected function setRoutePrototype(Route $route)
+    protected function setRouteProperty(Route $route)
     {
         $route
             ->name_prefix('users.account.')->name('.profiles.item')
-            ->path_prefix('/users/{user_id}/account/')->path('/profiles/{item_name}/{item_prototype}')
-            ->tokens('user_id', '\d+')->tokens(['item_prototype' => 'name|value'])
+            ->path_prefix('/users/{user_id}/account/')->path('/profiles/{item_name}/{item_property}')
+            ->tokens('user_id', '\d+')->tokens(['item_property' => 'name|value'])
             ->methods('get')->methods(['options', 'header']);
     }
 
@@ -122,7 +122,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
             ->param_sources('uri')->param_sources(['get', 'post', 'file'])
             ->param_handlers([
                     'item_name' => ['TestParamHandlerA'],
-                    'item_prototype' => [new TestParamHandlerB()]
+                    'item_property' => [new TestParamHandlerB()]
                 ])
             ->param_handlers('sort', [new TestParamHandlerC(), 'process'])
             ->param_handlers('top', ['TestParamHandlerD', 'process'])

@@ -16,7 +16,7 @@ class RouteDispatcher extends RouteDispatcherPrototype
         $segments = explode('/', trim($uri_path, '/'));
 
         array_pop($segments);
-        array_walk($segment, [$this, 'handleSegment']);
+        array_walk($segments, [$this, 'handleSegment']);
 
         return implode('\\', $segments);
     }
@@ -55,7 +55,7 @@ class RouteDispatcher extends RouteDispatcherPrototype
                     }
                 } elseif ($reflector->implementsInterface(ServerRequestInterface::class)) {
                     $arguments = [$request];
-                }                
+                }
             } else {
                 foreach ($parameters as $key => $parameter) {
                     if (isset($params[$parameter->name])) {
@@ -93,7 +93,7 @@ class RouteDispatcher extends RouteDispatcherPrototype
         }
     }
 
-    protected function handleSegment(string $segment)
+    protected function handleSegment(string &$segment)
     {
         if (!(strpos($segment, '_') === false)) {
             $segment = implode(array_map(

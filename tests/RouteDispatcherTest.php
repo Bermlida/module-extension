@@ -1,5 +1,6 @@
 <?php
 
+use Phly\Http\ServerRequest;
 use Vista\Router\RouteDispatcher;
 
 class RouteDispatcherTest extends PHPUnit_Framework_TestCase
@@ -7,18 +8,40 @@ class RouteDispatcherTest extends PHPUnit_Framework_TestCase
     public function defaultRequestProvider()
     {
         return [
-            'with route model' => [
-                'params' => $this->getParamsMatchRouteModel(),
-                'result' => $this->getResultMatchRouteModel()
-            ],
-            'with server request' => [
-                'params' => $this->getParamsMatchServerRequest(),
-                'result' => $this->getResultMatchServerRequest()
-            ],
-            'with params' => [
-                'params' => $this->getParamsMatchParams(),
-                'result' => $this->getResultMatchParams()
-            ]
+            'with route model' => [[
+                'params' => [
+                    'uri' => '/test_handler/process_with_model',
+                    'method' => 'put',
+                    'query' => ['item_name' => 'name'],
+                    'parsed_body' => ['item_property' => 'first_name']
+                ],
+                'result' => ['name', 'first_name']
+            ]],
+            'with server request' => [[
+                'params' => [
+                    'uri' => '/test_handler/process_with_request',
+                    'method' => 'patch',
+                    'query' => ['class' => 'im'],
+                    'parsed_body' => [
+                        'IM104001' => 'John',
+                        'IM104002' => 'Cheans'
+                    ]
+                ],
+                'result' => [
+                    'class' => 'im',
+                    'IM104001' => 'John',
+                    'IM104002' => 'Cheans'
+                ]
+            ]],
+            'with params' => [[
+                'params' => [
+                    'uri' => '/test_handler/process',
+                    'method' => 'get',
+                    'query' => ['var_get' => 123456],
+                    'parsed_body' => ['var_post' => 987654]
+                ],
+                'result' => (987654 - 123456)
+            ]]
         ];
     }
 
@@ -35,13 +58,12 @@ class RouteDispatcherTest extends PHPUnit_Framework_TestCase
      */
     public function testDefaultHandle($request, $dispatcher)
     {
-        $request = $this->getRequest($request['params']);
-        $dispatcher->handle($request);
+        $dispatcher->handle($this->getRequest($request['params']));
         
-        $this->assertEquals($stub->executed(), true);
-        $this->assertEquals($stub->result(), $request['result']);
+        $this->assertEquals($dispatcher->executed(), true);
+        $this->assertEquals($dispatcher->result(), $request['result']);
     }
-
+/*
     private function getParamsMatchRouteModel()
     {
         return [
@@ -71,7 +93,7 @@ class RouteDispatcherTest extends PHPUnit_Framework_TestCase
             'parsed_body' => ['var_post' => 987654]
         ];
     }
-
+*/
     private function getRequest(array $params)
     {
         $request_params = [

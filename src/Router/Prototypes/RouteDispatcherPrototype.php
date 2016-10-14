@@ -85,10 +85,10 @@ abstract class RouteDispatcherPrototype implements RouteDispatcherInterface
 
     protected function executeDefaultHandle(ServerRequestInterface $request)
     {
-        $class = $this->getClass($request);
+        $class = $this->root_namespace . '\\' . $this->getClass($request);
         $method = $this->getMethod($request);
         $arguments = $this->bindArguments([$class, $method], $request);
-
+        
         if (class_exists($class) && method_exists($class, $method)) {
             $this->executed = true;
             $this->result = call_user_func_array([$class, $method], $arguments);

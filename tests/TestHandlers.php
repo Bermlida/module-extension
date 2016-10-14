@@ -14,12 +14,12 @@ class TestHandlerA
 
 class TestHandlerB
 {
-    public function __invoke(string $item_prototype)
+    public function __invoke(string $item_property)
     {
         return [
             'method' => __METHOD__,
-            'name' => 'item_prototype',
-            'value' => $item_prototype
+            'name' => 'item_property',
+            'value' => $item_property
         ];
     }
 }
