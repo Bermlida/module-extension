@@ -1,5 +1,5 @@
 {
-    "name": "bermlida/module-extension",
+    "name": "bermlida/Vista.Router",
     "description": "none",
     "license": "MIT",
     "authors": [
@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Vista\\": "src/"
+            "Vista\\Router\\": "src/"
         },
         "files": [
             "tests/TestRouteModel.php",
