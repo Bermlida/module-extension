@@ -37,9 +37,17 @@ class RouterTest extends PHPUnit_Framework_TestCase
     public function testGroup()
     {
         $this->router->group(
+            'users/{user_id}/',
             function (Router $router) {
+                $router->route(
+                    '/account/{setting}/{property}',
+                    ['get', 'header'],
+                    function ($setting, $property) {
 
-            }
+                    }
+                );
+            },
+            'user'
         );
     }
 }
