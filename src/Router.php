@@ -30,18 +30,21 @@ class Router
         RouteDispatcherInterface $dispatcher
     ) {
         $this->collection = $collection;
+
         $this->dispatcher = $dispatcher;
     }
 
-    public function root_namespace(string $root_namespace)
+    public function setRootNamespace(string $root_namespace)
     {
         $this->root_namespace = $root_namespace;
+
         return $this;
     }
 
-    public function custom_setting($custom_setting)
+    public function setCustomSetting($custom_setting)
     {
         $this->custom_setting = $custom_setting;
+
         return $this;
     }
 
@@ -141,6 +144,7 @@ class Router
     protected function registerRoute()
     {
         $route = is_object($this->default_route) ? clone $this->default_route : new Route();
+
         return $route;
     }
 

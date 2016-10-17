@@ -63,37 +63,7 @@ class RouteDispatcherTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($dispatcher->executed(), true);
         $this->assertEquals($dispatcher->result(), $request['result']);
     }
-/*
-    private function getParamsMatchRouteModel()
-    {
-        return [
-            'uri' => '/test_handler/process',
-            'method' => 'post',
-            'query' => ['var_get' => 123456],
-            'parsed_body' => ['var_post' => 987654]
-        ];
-    }
-
-    private function getParamsMatchServerRequest()
-    {
-        return [
-            'uri' => '/test_handler/process',
-            'method' => 'post',
-            'query' => ['var_get' => 123456],
-            'parsed_body' => ['var_post' => 987654]
-        ];
-    }
-
-    private function getParamsMatchParams()
-    {
-        return [
-            'uri' => '/test_handler/process',
-            'method' => 'post',
-            'query' => ['var_get' => 123456],
-            'parsed_body' => ['var_post' => 987654]
-        ];
-    }
-*/
+    
     private function getRequest(array $params)
     {
         $request_params = [
