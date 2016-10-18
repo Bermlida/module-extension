@@ -17,23 +17,27 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testRouter
+     * @depends clone testRouter
      */
     public function testSetRootNamespace(Router $router)
     {
         $router->setRootNamespace('Vista\Router\Tests\Handlers');
+
+        return $router;
     }
 
     /**
-     * @depends testRouter
+     * @depends clone testRouter
      */
     public function testSetCustomSetting(Router $router)
     {
         $router->setCustomSetting('test_custom_setting');
+
+        return $router;
     }
 
     /**
-     * @depends testRouter
+     * @depends clone testRouter
      */
     public function testDefault(Router $router)
     {
@@ -54,7 +58,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testDefault
+     * @depends clone testDefault
      */
     public function testGroup(Router $router)
     {
@@ -71,5 +75,20 @@ class RouterTest extends PHPUnit_Framework_TestCase
             },
             'user'
         );
+    }
+
+    /**
+     * @depends clone testDefault
+     */
+    public function testNonGroup(Route $router)
+    {
+        $router
+            ->options('/profiles/{profiles_item}')
+            ->head('/profiles/{profiles_item}')
+            ->get('/profiles/{profiles_item}')
+            ->put('/profiles/{profiles_item}/{profiles_value}')
+            ->delete('/profiles/{profiles_item}')
+            ->post('/profiles')
+            ->patch('/profiles');
     }
 }

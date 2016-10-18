@@ -58,9 +58,17 @@ class RouteSetterTraitTest extends PHPUnit_Framework_TestCase
     public function paramSourcesProvider()
     {
         return [
-            'param_sources1' => [['get',  'uri']],
-            'param_sources2' => [['get', 'post']],
-            'param_sources3' => [['post', 'files']],
+            'param_sources1' => [[
+                'user_id' => 'get'
+            ]],
+            'param_sources2' => [[
+                'setting_item' => 'get',
+                'setting_value' => 'post'
+            ]],
+            'param_sources3' => [[
+                'sort_by' => 'post',
+                'transaction' => 'files'
+            ]]
         ];
     }
     
@@ -77,7 +85,7 @@ class RouteSetterTraitTest extends PHPUnit_Framework_TestCase
                 'setting_value' => [new TestParamHandlerB()]
             ]],
             'param_handlers3' => [[
-                'transaction_id' => ['TestParamHandlerC', 'process'],
+                'transaction' => ['TestParamHandlerC', 'process'],
                 'sort_by' => [new TestParamHandlerD(), 'process']
             ]]
         ];

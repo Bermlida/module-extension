@@ -85,12 +85,32 @@ class Route implements RouteInterface
 
     protected function resolveSources(ServerRequestInterface $request)
     {
-        $items = [];
-        $sources = $this->param_sources;
+        // $items = [];
+        // $sources = $this->param_sources;
+        $params = [];
+        
+        $original_data = [
+            'get' => $request->getQueryParams(),
+            'post' => $request->getParsedBody(),
+            'file' => $request->getUploadedFiles(),
+            'cookie' => $request->getCookieParams(),
+            'uri' => $this->resolveUriSource($request->getServerParams()['REQUEST_URI'])
+        ];
 
+        foreach ($this->param_sources as $item => $source) {
+            // if ($source == 'uri') {
+            //     $uri = $request->getServerParams()['REQUEST_URI'];
+            //     $data = $this->resolveUriSource($uri);
+            // } else {
+            //     $data = isset($original_data[$source]) ? $original_data[$source] : [];
+            // }
+            if (isset($original_data[$source][$item])) {
+                $params[$item] = $original_data[$source][$item];
+            }
+        }
+/*
         while (!empty($sources)) {
             $source = array_pop($sources);
-
             switch ($source) {
                 case "uri":
                     $uri = $request->getServerParams()['REQUEST_URI'];
@@ -113,7 +133,8 @@ class Route implements RouteInterface
             }
             $items = array_merge($items, $new_items);
         }
-        return $items;
+*/
+        return $params;
     }
 
     protected function handleParams(array $params)

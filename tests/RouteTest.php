@@ -119,15 +119,21 @@ class RouteTest extends PHPUnit_Framework_TestCase
     protected function setRouteParams(Route $route)
     {
         $route
-            ->param_sources('uri')->param_sources(['get', 'post', 'file'])
-            ->param_handlers([
-                    'item_name' => ['TestParamHandlerA'],
-                    'item_property' => [new TestParamHandlerB()]
+            ->param_sources([
+                    'sort' => 'get',
+                    'top' => 'post'
                 ])
-            ->param_handlers('sort', [new TestParamHandlerC(), 'process'])
-            ->param_handlers('top', ['TestParamHandlerD', 'process'])
+            ->param_sources('user_id', 'uri')
+            ->param_sources('item_name', 'uri')
+            ->param_sources('item_property', 'uri')
+            ->param_handlers([
+                    'item_name' => ['TestParamHandler'],
+                    'item_property' => [new TestParamHandler()]
+                ])
+            ->param_handlers('sort', [new TestParamHandler(), 'processTimesTen'])
+            ->param_handlers('top', ['TestParamHandler', 'processDividedTen'])
             ->param_handlers('user_id', function ($param) {
-                    return (object)$param;
+                    return (object)(['user_id' => $param]);
                 });
     }
 

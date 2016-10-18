@@ -30,7 +30,7 @@ class RouteGetterTraitTest extends PHPUnit_Framework_TestCase
 
         $stub->tokens = ['user_id' => '\d+'];
         $stub->methods = ['get', 'put', 'post', 'patch'];
-        $stub->param_sources = ['post', 'file', 'uri'];
+        $stub->param_sources = ['user_id' => 'uri'];
         
         return $stub;
     }
@@ -125,7 +125,7 @@ class RouteGetterTraitTest extends PHPUnit_Framework_TestCase
      */
     public function testParamSources($stub)
     {
-        $this->assertEquals($stub->__get('param_sources'), ['post', 'file', 'uri']);
+        $this->assertEquals($stub->__get('param_sources'), ['user_id' => 'uri']);
     }
 
     /**

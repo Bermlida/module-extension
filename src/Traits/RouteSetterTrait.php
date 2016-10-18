@@ -81,7 +81,7 @@ trait RouteSetterTrait
         }
         return $this;
     }
-
+/*
     protected function setParamSources($sources)
     {
         $judge_result = false;
@@ -99,7 +99,25 @@ trait RouteSetterTrait
             throw new RuntimeException('');
         }
     }
-    
+*/
+    protected function setParamSources($items, $source = null)
+    {
+        $judge_result = false;
+        $original_sources = $this->param_sources;
+
+        if (is_string($items) || is_array($items)) {
+            $sources = is_string($items) ? [$items => $source] : $items;
+            $judge_result = !in_array(false, array_map([$this, 'judgeValidSource'], $sources));
+        }
+        
+        if ($judge_result) {
+            $this->param_sources = array_merge($original_sources, $sources);
+            return $this;
+        } else {
+            throw new RuntimeException('');
+        }
+    }
+
     protected function setParamHandlers($items, $handler = null)
     {
         $judge_result = false;

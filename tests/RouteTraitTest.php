@@ -24,7 +24,10 @@ class RouteTraitTest extends PHPUnit_Framework_TestCase
         $stub->full_regex = 'users\/(\d+)\/account\/profiles\/(\w+)\/(name|value)';
         $stub->methods = ['get', 'options', 'header'];
 
-        $stub->param_sources = ['get', 'post', 'file'];
+        $stub->param_sources = [
+            'sort' => 'get',
+            'top' => 'post'
+        ];
         $stub->param_handlers = [
             'sort' => function ($param) {
                 return $param * 10;
@@ -108,12 +111,10 @@ class RouteTraitTest extends PHPUnit_Framework_TestCase
         $stub->method('resolveSources')->will(
             $this->returnCallback(
                 function ($request) {
-                    $items = [];
-
-                    $items = array_merge($items, $request->getUploadedFiles());
-                    $items = array_merge($items, $request->getParsedBody());
-                    $items = array_merge($items, $request->getQueryParams());
-
+                    $items['sort'] = $request->getQueryParams()['sort'];
+                    
+                    $items['top'] = $request->getParsedBody()['top'];
+                    
                     return $items;
                 }
             )
