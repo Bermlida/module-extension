@@ -1,49 +1,71 @@
 <?php
 
+use Vista\Router\Router;
 use Vista\Router\RouteCollection;
 use Vista\Router\RouteDispatcher;
 
 class RouterTest extends PHPUnit_Framework_TestCase
 {
-    public function setUp()
+    public function testRouter()
     {
         $router = new Router(
             new RouteCollection(),
             new RouteDispatcher()
         );
 
-        $this->router = $router;
+        return $router;
     }
 
-    public function testSetNameSpace()
+    /**
+     * @depends testRouter
+     */
+    public function testSetRootNamespace(Router $router)
     {
-        $this->router->setNameSpace('');
+        $router->setRootNamespace('Vista\Router\Tests\Handlers');
     }
 
-    public function testSetCustomSetting()
+    /**
+     * @depends testRouter
+     */
+    public function testSetCustomSetting(Router $router)
     {
-        $this->router->setCustomSetting('');
+        $router->setCustomSetting('test_custom_setting');
     }
 
-    public function testDefault()
+    /**
+     * @depends testRouter
+     */
+    public function testDefault(Router $router)
     {
-        $this->router->default(
+        $router->default()->tokens(['user' => '\d+']);
+
+        $router->default(
             function (Router $router) {
-
+                $router
+                    ->param_sources(['uri'])
+                    ->param_handlers('user', function ($param) {
+                            $user['user_id'] = $param;
+                            return (object)$user;
+                    });
             }
         );
+
+        return $router;
     }
 
-    public function testGroup()
+    /**
+     * @depends testDefault
+     */
+    public function testGroup(Router $router)
     {
-        $this->router->group(
-            'users/{user_id}/',
+        $router->group(
+            'users/{user}/',
             function (Router $router) {
                 $router->route(
-                    '/account/{setting}/{property}',
+                    '/account/{setting_item}/{setting_value}',
                     ['get', 'header'],
-                    function ($setting, $property) {
-
+                    function ($user, $setting_item, $setting_value) {
+                        $user->$setting_item = $setting_value;
                     }
                 );
             },

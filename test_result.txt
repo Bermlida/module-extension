@@ -1,0 +1,124 @@
+PHPUnit 5.5.5 by Sebastian Bergmann and contributors.
+
+﻿﻿.....                                                               5 / 5 (100%)/home/tkb-user/projects/Vista.Router/tests/RouterTest.php:73:
+class Vista\Router\Router#6971 (8) {
+  protected $root_namespace =>
+  string(27) "Vista\Router\Tests\Handlers"
+  protected $custom_setting =>
+  string(19) "test_custom_setting"
+  protected $default_route =>
+  class Vista\Router\Route#6976 (9) {
+    protected $name_prefix =>
+    string(0) ""
+    protected $path_prefix =>
+    string(0) ""
+    protected $name =>
+    string(0) ""
+    protected $path =>
+    string(0) ""
+    protected $tokens =>
+    array(1) {
+      'user' =>
+      string(3) "\d+"
+    }
+    protected $methods =>
+    array(0) {
+    }
+    protected $handler =>
+    NULL
+    protected $param_sources =>
+    array(1) {
+      [0] =>
+      string(3) "uri"
+    }
+    protected $param_handlers =>
+    array(1) {
+      'user' =>
+      class Closure#6977 (2) {
+        ...
+      }
+    }
+  }
+  protected $cache_route =>
+  class Vista\Router\Route#6978 (9) {
+    protected $name_prefix =>
+    string(4) "user"
+    protected $path_prefix =>
+    string(12) "users/{user}"
+    protected $name =>
+    string(0) ""
+    protected $path =>
+    string(38) "account/{setting_item}/{setting_value}"
+    protected $tokens =>
+    array(1) {
+      'user' =>
+      string(3) "\d+"
+    }
+    protected $methods =>
+    array(2) {
+      [0] =>
+      string(3) "get"
+      [1] =>
+      string(6) "header"
+    }
+    protected $handler =>
+    class Closure#6974 (2) {
+      public $this =>
+      class RouterTest#273 (38) {
+        ...
+      }
+      public $parameter =>
+      array(3) {
+        ...
+      }
+    }
+    protected $param_sources =>
+    array(1) {
+      [0] =>
+      string(3) "uri"
+    }
+    protected $param_handlers =>
+    array(1) {
+      'user' =>
+      class Closure#6977 (2) {
+        ...
+      }
+    }
+  }
+  protected $cache_path_prefix =>
+  string(0) ""
+  protected $cache_name_prefix =>
+  string(0) ""
+  protected $collection =>
+  class Vista\Router\RouteCollection#6972 (1) {
+    protected $routes =>
+    array(1) {
+      [0] =>
+      class Vista\Router\Route#6978 (9) {
+        ...
+      }
+    }
+  }
+  protected $dispatcher =>
+  class Vista\Router\RouteDispatcher#6973 (6) {
+    protected $root_namespace =>
+    NULL
+    protected $rules =>
+    NULL
+    protected $custom_setting =>
+    NULL
+    protected $cache_handle_type =>
+    string(0) ""
+    protected $executed =>
+    bool(false)
+    protected $result =>
+    NULL
+  }
+}
+
+
+Time: 170 ms, Memory: 14.00MB
+
+OK (5 tests, 0 assertions)
+
+Generating code coverage report in HTML format ... done

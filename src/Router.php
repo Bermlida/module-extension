@@ -149,21 +149,27 @@ class Router
     }
 
     public function __call($method, $arguments)
-    {
-        if (is_object($this->cache_route) && method_exists($this->cache_route, $method)) {            
+    {   // && method_exists($this->cache_route, $method)
+        if (is_object($this->cache_route)) {
             switch (count($arguments)) {
                 case 0:
                     $this->cache_route->$method();
+                    break;
                 case 1:
                     $this->cache_route->$method($arguments[0]);
+                    break;
                 case 2:
                     $this->cache_route->$method($arguments[0], $arguments[1]);
+                    break;
                 case 3:
                     $this->cache_route->$method($arguments[0], $arguments[1], $arguments[2]);
+                    break;
                 case 4:
                     $this->cache_route->$method($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+                    break;
                 default:
                     call_user_func_array([$this->cache_route, $method], $arguments);
+                    break;
             }
         }
         return $this;
