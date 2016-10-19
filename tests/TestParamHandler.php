@@ -19,6 +19,6 @@ class TestParamHandler
 
     public function processDividedTen($param)
     {
-        return $param / 10;
+        return round($param / 10, 1);
     }
 }

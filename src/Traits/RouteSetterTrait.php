@@ -81,25 +81,7 @@ trait RouteSetterTrait
         }
         return $this;
     }
-/*
-    protected function setParamSources($sources)
-    {
-        $judge_result = false;
-        if (is_string($sources) || is_array($sources)) {
-            // $sources = array_map('strtolower', (is_string($sources) ? [$sources] : $sources));
-            $sources = is_string($sources) ? [$sources] : $sources;
-            $judge_result = !in_array(false, array_map([$this, 'judgeValidSource'], $sources));
-        }
-        
-        if ($judge_result) {
-            $sources = array_diff($sources, $this->param_sources);
-            $this->param_sources = array_merge($this->param_sources, $sources);
-            return $this;
-        } else {
-            throw new RuntimeException('');
-        }
-    }
-*/
+
     protected function setParamSources($items, $source = null)
     {
         $judge_result = false;

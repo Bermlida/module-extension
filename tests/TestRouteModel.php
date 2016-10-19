@@ -4,21 +4,28 @@ use Vista\Router\Interfaces\RouteModelInterface;
 
 class TestRouteModel implements RouteModelInterface
 {
+    private $user_id;
     private $item_name;
     private $item_property;
     
-    public function __construct(string $item_name, string $item_property)
+    public function __construct($user, $item_name, $item_property, $sort, $top)
     {
+        $this->user_id = $user->user_id;
         $this->item_name = $item_name;
         $this->item_property = $item_property;
+
+        $this->sort = $sort;
+        $this->top = $top;
     }
 
-    public function __get($name)
+    public function get_all_data()
     {
-        if (isset($this->$name)) {
-            return $this->$name;
-        }
-
-        return null;
+        return [
+            'user_id' => $this->user_id,
+            'item_name' => $this->item_name,
+            'item_property' => $this->item_property,
+            'sort' => $this->sort,
+            'top' => $this->top
+        ];
     }
 }

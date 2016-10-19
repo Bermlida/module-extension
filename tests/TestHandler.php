@@ -1,36 +1,44 @@
 <?php
 
-namespace Vista\Router\Tests\Handlers;
-
-use TestRouteModel;
-use Phly\Http\ServerRequest;
-use Vista\Router\Interfaces\RouteModelInterface;
-
 class TestHandler
 {
-    public function process(ServerRequest $request)
+    public function __invoke($user, $item_name, $item_property, $sort, $top)
     {
-        return $request;
+        $user->item_name = $item_name;
+        $user->item_property = $item_property;
+        $user->sort = $sort;
+        $user->top = $top;
+
+        return (array)$user;
     }
 
-    public function putProcessWithModel(TestRouteModel $model)
+    public function process($user, $item_name, $item_property, $sort, $top)
     {
-        return [
-            $model->item_name,
-            $model->item_property
-        ];
+        $return_value = compact(['item_name', 'item_property', 'sort', 'top']);
+        
+        $return_value['user_id'] = $user->user_id;
+        
+        return $return_value;
     }
 
-    public function patchProcessWithRequest(ServerRequest $request)
+    public function processWithModel(TestRouteModel $model)
     {
-        return array_merge(
-            $request->getQueryParams(),
-            $request->getParsedBody()
-        );
-    }
-
-    public function getProcess(int $var_get, int $var_post)
-    {
-        return $var_post - $var_get;
+        return $model->get_all_data();
     }
 }
+// class TestHandlerC
+// {
+//     public function processWithModel(TestRouteModel $model)
+//     {
+        // return ;
+//     }
+// }
+
+// class TestHandlerD
+// {
+//     public function process($sort, $top)
+//     {
+
+//     }
+// }
+

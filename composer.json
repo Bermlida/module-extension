@@ -18,7 +18,6 @@
         "files": [
             "tests/TestRouteModel.php",
             "tests/TestHandler.php",
-            "tests/TestHandlers.php",
             "tests/TestParamHandler.php"
         ]
     },

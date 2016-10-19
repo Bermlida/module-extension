@@ -83,57 +83,38 @@ class Route implements RouteInterface
         return $handler;
     }
 
+    protected function resolveUriSource(ServerRequestInterface $request)
+    {
+        $uri = $request->getServerParams()['REQUEST_URI'];
+        $uri_path = trim(parse_url($uri)['path'], '/');
+        $key_result = preg_match_all('/\{(\w+)\}/', $this->full_path, $key_matches);
+        $value_result = preg_match('/' . $this->full_regex . '/', $uri_path, $value_matches);
+        
+        if ($key_result >= 1 && $value_result === 1) {
+            unset($key_matches[0]);
+            unset($value_matches[0]);
+            return array_combine($key_matches[1], $value_matches);
+        }
+        return [];
+    }
+
     protected function resolveSources(ServerRequestInterface $request)
     {
-        // $items = [];
-        // $sources = $this->param_sources;
-        $params = [];
+        $params = $this->resolveUriSource($request);
         
         $original_data = [
             'get' => $request->getQueryParams(),
             'post' => $request->getParsedBody(),
             'file' => $request->getUploadedFiles(),
-            'cookie' => $request->getCookieParams(),
-            'uri' => $this->resolveUriSource($request->getServerParams()['REQUEST_URI'])
+            'cookie' => $request->getCookieParams()
         ];
 
         foreach ($this->param_sources as $item => $source) {
-            // if ($source == 'uri') {
-            //     $uri = $request->getServerParams()['REQUEST_URI'];
-            //     $data = $this->resolveUriSource($uri);
-            // } else {
-            //     $data = isset($original_data[$source]) ? $original_data[$source] : [];
-            // }
             if (isset($original_data[$source][$item])) {
                 $params[$item] = $original_data[$source][$item];
             }
         }
-/*
-        while (!empty($sources)) {
-            $source = array_pop($sources);
-            switch ($source) {
-                case "uri":
-                    $uri = $request->getServerParams()['REQUEST_URI'];
-                    $new_items = $this->resolveUriSource($uri);
-                    break;
-                case "get":
-                    $new_items = $request->getQueryParams();
-                    break;
-                case "post":
-                    $new_items = $request->getParsedBody();
-                    break;
-                case "file":
-                    $new_items = $request->getUploadedFiles();
-                    break;
-                case "cookie":
-                    $new_items = $request->getCookieParams();
-                    break;
-                default:
-                    $new_items = [];
-            }
-            $items = array_merge($items, $new_items);
-        }
-*/
+        
         return $params;
     }
 
@@ -146,6 +127,7 @@ class Route implements RouteInterface
                 $params[$item] = $new_param;
             }
         }
+        
         return $params;
     }
 
@@ -200,19 +182,5 @@ class Route implements RouteInterface
             default:
                 return call_user_func_array($handler, $arguments);
         }
-    }
-
-    protected function resolveUriSource(string $uri)
-    {
-        $uri_path = trim(parse_url($uri)['path'], '/');
-        $key_result = preg_match_all('/\{(\w+)\}/', $this->full_path, $key_matches);
-        $value_result = preg_match('/' . $this->full_regex . '/', $uri_path, $value_matches);
-        
-        if ($key_result >= 1 && $value_result === 1) {
-            unset($key_matches[0]);
-            unset($value_matches[0]);
-            return array_combine($key_matches[1], $value_matches);
-        }
-        return [];
     }
 }
