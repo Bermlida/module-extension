@@ -7,11 +7,26 @@ class RouteGetterTraitTest extends PHPUnit_Framework_TestCase
     public function handlerProvider()
     {
         return [
-            'handler1' => [['TestHandlerA']],
-            'handler2' => [[new TestHandlerB()]],
-            'handler3' => [['TestHandlerC', 'process']],
-            'handler4' => [[new TestHandlerD(), 'process']],
+            'handler1' => [['TestHandler']],
+            'handler2' => [[new TestHandler()]],
+            'handler3' => [['TestHandler', 'process']],
+            'handler4' => [[new TestHandler(), 'process']],
             'handler5' => [
+                function ($argument) {
+                    return var_export($argument , true);
+                }
+            ]
+        ];
+    }
+
+    public function paramHandlerProvider()
+    {
+        return [
+            'param_handler1' => [['TestParamHandler']],
+            'param_handler2' => [[new TestParamHandler()]],
+            'param_handler3' => [['TestParamHandler', 'process']],
+            'param_handler4' => [[new TestParamHandler(), 'process']],
+            'param_handler5' => [
                 function ($argument) {
                     return var_export($argument , true);
                 }
@@ -129,7 +144,7 @@ class RouteGetterTraitTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider handlerProvider
+     * @dataProvider paramHandlerProvider
      * @depends testStub
      */
     public function testParamHandlers($handler, $stub)

@@ -43,10 +43,10 @@ class RouteSetterTraitTest extends PHPUnit_Framework_TestCase
     public function handlerProvider()
     {
         return [
-            'handler1' => [['TestHandlerA']],
-            'handler2' => [[new TestHandlerB()]],
-            'handler3' => [['TestHandlerC', 'process']],
-            'handler4' => [[new TestHandlerD(), 'process']],
+            'handler1' => [['TestHandler']],
+            'handler2' => [[new TestHandler()]],
+            'handler3' => [['TestHandler', 'process']],
+            'handler4' => [[new TestHandler(), 'process']],
             'handler5' => [
                 function ($argument) {
                     return var_export($argument , true);
@@ -81,12 +81,12 @@ class RouteSetterTraitTest extends PHPUnit_Framework_TestCase
                 }
             ]], 
             'param_handlers2' => [[
-                'setting_item' => ['TestParamHandlerA'],
-                'setting_value' => [new TestParamHandlerB()]
+                'setting_item' => ['TestParamHandler'],
+                'setting_value' => [new TestParamHandler()]
             ]],
             'param_handlers3' => [[
-                'transaction' => ['TestParamHandlerC', 'process'],
-                'sort_by' => [new TestParamHandlerD(), 'process']
+                'transaction' => ['TestParamHandler', 'process'],
+                'sort_by' => [new TestParamHandler(), 'process']
             ]]
         ];
     }

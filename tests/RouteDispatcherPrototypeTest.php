@@ -75,9 +75,9 @@ class RouteDispatcherPrototypeTest extends PHPUnit_Framework_TestCase
                 ->handler(function ($user_id, $sort, $top) {
                         return compact(['user_id', 'sort', 'top']);
                     })
-                ->param_sources(['uri', 'get', 'post'])
-                ->param_handlers('sort', ['TestParamHandlerC', 'process'])
-                ->param_handlers('top', [new TestParamHandlerD(), 'process'])
+                ->param_sources(['sort' => 'get', 'top' => 'post'])
+                ->param_handlers('sort', ['TestParamHandler', 'processTimesTen'])
+                ->param_handlers('top', [new TestParamHandler(), 'processDividedTen'])
         ]);
 
         $request = $this->getRequest([

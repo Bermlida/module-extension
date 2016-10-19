@@ -18,7 +18,8 @@
         "files": [
             "tests/TestRouteModel.php",
             "tests/TestHandler.php",
-            "tests/TestParamHandler.php"
+            "tests/TestParamHandler.php",
+            "tests/TestNamespaceHandler.php"
         ]
     },
     "require-dev": {

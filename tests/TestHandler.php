@@ -26,19 +26,4 @@ class TestHandler
         return $model->get_all_data();
     }
 }
-// class TestHandlerC
-// {
-//     public function processWithModel(TestRouteModel $model)
-//     {
-        // return ;
-//     }
-// }
-
-// class TestHandlerD
-// {
-//     public function process($sort, $top)
-//     {
-
-//     }
-// }
 

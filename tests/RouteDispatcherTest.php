@@ -12,8 +12,8 @@ class RouteDispatcherTest extends PHPUnit_Framework_TestCase
                 'params' => [
                     'uri' => '/test_handler/process_with_model',
                     'method' => 'put',
-                    'query' => ['item_name' => 'name'],
-                    'parsed_body' => ['item_property' => 'first_name']
+                    'query' => ['item_name' => 'name', 'sort' => 22, 'user' => (object)['user_id' => 55]],
+                    'parsed_body' => ['item_property' => 'first_name', 'top' => 33]
                 ],
                 'result' => ['name', 'first_name']
             ]],
