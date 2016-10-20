@@ -1,10 +1,9 @@
 <?php
-// namespace Vista\Router\Tests;
 
 use Vista\Router\Router;
 use Vista\Router\RouteCollection;
 use Vista\Router\RouteDispatcher;
-use \PHPUnit_Framework_TestCase;
+use Vista\Router\Tests\Modules\TestHandler;
 
 /**
  * @coversDefaultClass \Vista\Router\Tests
@@ -26,7 +25,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testSetRootNamespace(Router $router)
     {
-        $router->setRootNamespace('Vista\Router\Tests\Handlers');
+        $router->setRootNamespace('Vista\Router\Tests\Modules');
 
         return $router;
     }
@@ -51,7 +50,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $router->default(
             function (Router $router) {
                 $router
-                    ->param_sources(['uri'])
+                    ->param_sources(['user' => 'uri'])
                     ->param_handlers('user', function ($param) {
                             $user['user_id'] = $param;
                             return (object)$user;
@@ -76,7 +75,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
                     function ($user, $setting_item, $setting_value) {
                         $user->$setting_item = $setting_value;
                     }
-                );
+                )->param_sources(['setting_item' => 'uri', 'setting_value' => 'uri']);
             },
             'user'
         );
@@ -87,13 +86,39 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testNonGroup(Route $router)
     {
+        $router->options('/profiles', function () {
+            return ['head', 'get', 'put', 'delete', 'post', 'patch'];
+        });
+
+        $router->head('/profiles/{profiles_item}')
+        $router->get('/profiles/{profiles_item}')
+        $router->delete('/profiles/{profiles_item}')
+
         $router
-            ->options('/profiles/{profiles_item}')
-            ->head('/profiles/{profiles_item}')
-            ->get('/profiles/{profiles_item}')
-            ->put('/profiles/{profiles_item}/{profiles_value}')
-            ->delete('/profiles/{profiles_item}')
-            ->post('/profiles')
-            ->patch('/profiles');
+            ->put('/profiles/{item_name}',[TestHandler::class, 'process'])
+            ->param_sources([
+                'item_name' => 'uri',
+                'item_property' => 'post',
+                'sort' => 'get',
+                'top' => 'get'
+            ]);
+
+        $router
+            ->post('/profiles', [TestHandler::class])
+            ->param_sources([
+                'item_name' => 'post',
+                'item_property' => 'post',
+                'sort' => 'get',
+                'top' => 'get'
+            ]);
+
+        $router
+            ->patch('/profiles', [new TestHandler()])
+            ->param_sources([
+                'item_name' => 'post',
+                'item_property' => 'post',
+                'sort' => 'get',
+                'top' => 'get'
+            ]);
     }
 }
