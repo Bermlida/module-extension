@@ -120,20 +120,22 @@ class Route implements RouteInterface
         $parameters = (new ReflectionFunction($handler))->getParameters();
         
         if (!empty($parameters)) {
-/*
-            $reflector = $parameters[0]->getClass();
-            $interface = RouteModelInterface::class;
-            
-            if (!is_null($reflector) && $reflector->implementsInterface($interface)) {
-                $constructor = $reflector->getConstructor();                
-                if (!is_null($constructor)) {
-                    foreach ($constructor->getParameters() as $key => $parameter) {
-                        if (isset($params[$parameter->name])) {
-                            $value = $params[$parameter->name];
-                            $arguments[$key] = $value;
+            if (count($parameters) == 1 && !is_null($reflector = $parameters[0]->getClass())) {
+                if ($reflector->implementsInterface(RouteModelInterface::class)) {
+                    $constructor = $reflector->getConstructor();                
+                    if (!is_null($constructor)) {
+                        foreach ($constructor->getParameters() as $key => $parameter) {
+                            if (isset($params[$parameter->name])) {
+                                $value = $params[$parameter->name];
+                                $arguments[$key] = $value;
+                            }
                         }
+                        $arguments = [$reflector->newInstanceArgs(($arguments ?? []))];
                     }
-                    $arguments = [$reflector->newInstanceArgs(($arguments ?? []))];
+                } else {
+                    if (isset($params[$parameters[0]->name])) {
+                        $arguments[] = $params[$parameters[0]->name];
+                    }
                 }
             } else {
                 foreach ($parameters as $key => $parameter) {
@@ -143,7 +145,6 @@ class Route implements RouteInterface
                     }
                 }
             }
-*/
         }
 
         return $arguments ?? [];

@@ -1,15 +1,23 @@
-﻿<?php
+﻿<?php 
 
 use Vista\Router\Traits\RouteGetterTrait;
+use Vista\Router\Tests\Modules\TestHandler;
+use Vista\Router\Tests\Modules\TestParamHandler;
 
+/**
+ * @coversDefaultClass \Vista\Router\Tests
+ */
 class RouteGetterTraitTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function handlerProvider()
     {
         return [
-            'handler1' => [['TestHandler']],
+            'handler1' => [[TestHandler::class]],
             'handler2' => [[new TestHandler()]],
-            'handler3' => [['TestHandler', 'process']],
+            'handler3' => [[TestHandler::class, 'process']],
             'handler4' => [[new TestHandler(), 'process']],
             'handler5' => [
                 function ($argument) {
@@ -19,12 +27,15 @@ class RouteGetterTraitTest extends PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function paramHandlerProvider()
     {
         return [
-            'param_handler1' => [['TestParamHandler']],
+            'param_handler1' => [[TestParamHandler::class]],
             'param_handler2' => [[new TestParamHandler()]],
-            'param_handler3' => [['TestParamHandler', 'process']],
+            'param_handler3' => [[TestParamHandler::class, 'process']],
             'param_handler4' => [[new TestParamHandler(), 'process']],
             'param_handler5' => [
                 function ($argument) {

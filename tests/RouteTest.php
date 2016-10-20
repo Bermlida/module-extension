@@ -1,10 +1,19 @@
 <?php
 
 use Vista\Router\Route;
+use Vista\Router\Tests\Modules\TestHandler;
+use Vista\Router\Tests\Modules\TestRouteModel;
+use Vista\Router\Tests\Modules\TestParamHandler;
 use Phly\Http\ServerRequest;
 
+/**
+ * @coversDefaultClass \Vista\Router\Tests
+ */
 class RouteTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function handlerProvider()
     {
         return [
@@ -24,10 +33,10 @@ class RouteTest extends PHPUnit_Framework_TestCase
                     return $model->get_all_data();
                 }
             ],
-            'class name' => [['TestHandler']],
+            'class name' => [[TestHandler::class]],
             'object' => [[new TestHandler()]],
-            'class and method with params' => [['TestHandler', 'process']],
-            'class and method with route model' => [['TestHandler', 'processWithModel']],
+            'class and method with params' => [[TestHandler::class, 'process']],
+            'class and method with route model' => [[TestHandler::class, 'processWithModel']],
             'object and method with params' => [[new TestHandler(), 'process']],
             'object and method with route model' => [[new TestHandler(), 'processWithModel']]
         ];
@@ -62,7 +71,16 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($route->methods, ['get', 'options', 'header']);
 
-        $this->assertEquals($route->param_sources, ['sort' => 'get', 'top' => 'post']);
+        $this->assertEquals(
+            $route->param_sources,
+            [
+                'user' => 'uri',
+                'item_name' => 'uri',
+                'item_property' => 'uri',
+                'sort' => 'get',
+                'top' => 'post'
+            ]
+        );
     }
 
     /**
@@ -120,15 +138,18 @@ class RouteTest extends PHPUnit_Framework_TestCase
     {
         $route
             ->param_sources([
+                    'user' => 'uri',
+                    'item_name' => 'uri',
+                    'item_property' => 'uri',
                     'sort' => 'get',
                     'top' => 'post'
                 ])
             ->param_handlers([
-                    'item_name' => ['TestParamHandler'],
+                    'item_name' => [TestParamHandler::class],
                     'item_property' => [new TestParamHandler()]
                 ])
             ->param_handlers('sort', [new TestParamHandler(), 'processTimesTen'])
-            ->param_handlers('top', ['TestParamHandler', 'processDividedTen'])
+            ->param_handlers('top', [TestParamHandler::class, 'processDividedTen'])
             ->param_handlers('user', function ($param) {
                     return (object)(['user_id' => $param]);
                 });

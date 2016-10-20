@@ -1,10 +1,16 @@
 ﻿<?php
 
-use Vista\Router\Traits\RouteTrait;
 use Phly\Http\ServerRequest;
+use Vista\Router\Traits\RouteTrait;
 
+/**
+ * @coversDefaultClass \Vista\Router\Tests
+ */
 class RouteTraitTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function requestProvider()
     {
         return array_map([$this, 'getRequest'], [
@@ -65,6 +71,39 @@ class RouteTraitTest extends PHPUnit_Framework_TestCase
      * @dataProvider  requestProvider
      * @depends clone testStub
      */
+    public function testExecuteHandler($request , $stub)
+    {
+        $stub->param_sources = [
+            'sort' => 'get',
+            'top' => 'post'
+        ];
+
+        $stub->handler = function ($sort, $top) {
+            if ($sort == 220 && $top == 3.3) {
+                return 'correct value';
+            } else {
+                return 'error value';
+            }
+        };
+
+        $stub->method('resolveSources')->will(
+            $this->returnCallback(function ($request) {
+                return [
+                    'sort' => $request->getQueryParams()['sort'],
+                    'top' => $request->getParsedBody()['top']
+                ];
+            })
+        );
+
+        $stub->method('bindArguments')->will(
+            $this->returnCallback(function ($params) {
+                return [$params['sort'], $params['top']];
+            })
+        );
+
+        $this->assertEquals($stub->executeHandler($request), 'correct value');
+    }
+/*
     public function testExecuteHandlerWithParams($request , $stub)
     {
         $stub->param_sources = [
@@ -98,10 +137,7 @@ class RouteTraitTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($stub->executeHandler($request), 'correct value');
     }
 
-    /**
-     * @dataProvider  requestProvider
-     * @depends clone testStub
-     */
+    
     public function testExecuteHandlerWithUri($request , $stub)
     {
         $stub->param_sources = [];
@@ -129,10 +165,6 @@ class RouteTraitTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($stub->executeHandler($request), 'correct value');
     }
 
-    /**
-     * @dataProvider  requestProvider
-     * @depends clone testStub
-     */
     public function testExecuteHandlerWithRequest($request , $stub)
     {
         $stub->param_sources = [];
@@ -158,7 +190,7 @@ class RouteTraitTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($stub->executeHandler($request), 'correct value');
     }
-
+*/
     private function setResolveHandlerMethod($stub)
     {
         $stub->method('resolveHandler')->will(
@@ -194,6 +226,9 @@ class RouteTraitTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     private function getRequest(array $params)
     {
         $request_params = [

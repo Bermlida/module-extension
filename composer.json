@@ -13,14 +13,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Vista\\Router\\": "src/"
-        },
-        "files": [
-            "tests/TestRouteModel.php",
-            "tests/TestHandler.php",
-            "tests/TestParamHandler.php",
-            "tests/TestNamespaceHandler.php"
-        ]
+            "Vista\\Router\\": "src/",
+            "Vista\\Router\\Tests\\": "tests/"
+        }
     },
     "require-dev": {
         "phpunit/phpunit": "^5.5",

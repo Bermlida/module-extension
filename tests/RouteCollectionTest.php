@@ -3,6 +3,9 @@
 use Vista\Router\Route;
 use Vista\Router\RouteCollection;
 
+/**
+ * @coversDefaultClass \Vista\Router\Tests
+ */
 class RouteCollectionTest extends PHPUnit_Framework_TestCase
 {
     private $route;
@@ -46,6 +49,7 @@ class RouteCollectionTest extends PHPUnit_Framework_TestCase
     /**
      * @depends clone testOffsetSet
      * @expectedException RuntimeException
+     * @codeCoverageIgnore
      */
     public function testOffsetUnset(RouteCollection $collection)
     {

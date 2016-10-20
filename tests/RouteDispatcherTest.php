@@ -1,16 +1,22 @@
 <?php
 
-use Phly\Http\ServerRequest;
 use Vista\Router\RouteDispatcher;
+use Phly\Http\ServerRequest;
 
+/**
+ * @coversDefaultClass \Vista\Router\Tests
+ */
 class RouteDispatcherTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function defaultRequestProvider()
     {
         return [
             'with route model' => [[
                 'params' => [
-                    'uri' => '/test_handler/process_with_model',
+                    'uri' => '/test_default_handler/process_with_model',
                     'method' => 'put',
                     'query' => ['item_name' => 'name', 'sort' => 22, 'user' => (object)['user_id' => 55]],
                     'parsed_body' => ['item_property' => 'first_name', 'top' => 33]
@@ -19,7 +25,7 @@ class RouteDispatcherTest extends PHPUnit_Framework_TestCase
             ]],
             'with server request' => [[
                 'params' => [
-                    'uri' => '/test_handler/process_with_request',
+                    'uri' => '/test_default_handler/process_with_request',
                     'method' => 'patch',
                     'query' => ['class' => 'im'],
                     'parsed_body' => [
@@ -35,7 +41,7 @@ class RouteDispatcherTest extends PHPUnit_Framework_TestCase
             ]],
             'with params' => [[
                 'params' => [
-                    'uri' => '/test_handler/process',
+                    'uri' => '/test_default_handler/process',
                     'method' => 'get',
                     'query' => ['var_get' => 123456],
                     'parsed_body' => ['var_post' => 987654]
@@ -49,7 +55,7 @@ class RouteDispatcherTest extends PHPUnit_Framework_TestCase
     {
         $dispatcher = new RouteDispatcher();
 
-        return $dispatcher->default('\Vista\Router\Tests\Handlers\\');
+        return $dispatcher->default('\Vista\Router\Tests\Modules\\');
     }
 
     /**
@@ -63,7 +69,7 @@ class RouteDispatcherTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($dispatcher->executed(), true);
         $this->assertEquals($dispatcher->result(), $request['result']);
     }
-    
+
     private function getRequest(array $params)
     {
         $request_params = [

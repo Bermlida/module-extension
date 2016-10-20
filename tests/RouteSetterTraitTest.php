@@ -1,9 +1,17 @@
 <?php
 
 use Vista\Router\Traits\RouteSetterTrait;
+use Vista\Router\Tests\Modules\TestHandler;
+use Vista\Router\Tests\Modules\TestParamHandler;
 
+/**
+ * @coversDefaultClass \Vista\Router\Tests
+ */
 class RouteSetterTraitTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function nameProvider()
     {
         return [
@@ -13,6 +21,9 @@ class RouteSetterTraitTest extends PHPUnit_Framework_TestCase
         ];
     }       
   
+    /**
+     * @codeCoverageIgnore
+     */
     public function pathProvider()
     {
         return [
@@ -22,6 +33,9 @@ class RouteSetterTraitTest extends PHPUnit_Framework_TestCase
         ];
     }
     
+    /**
+     * @codeCoverageIgnore
+     */
     public function tokensProvider()
     {
         return [
@@ -31,6 +45,9 @@ class RouteSetterTraitTest extends PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function methodsProvider()
     {
         return [
@@ -40,12 +57,15 @@ class RouteSetterTraitTest extends PHPUnit_Framework_TestCase
         ];
     }
     
+    /**
+     * @codeCoverageIgnore
+     */
     public function handlerProvider()
     {
         return [
-            'handler1' => [['TestHandler']],
+            'handler1' => [[TestHandler::class]],
             'handler2' => [[new TestHandler()]],
-            'handler3' => [['TestHandler', 'process']],
+            'handler3' => [[TestHandler::class, 'process']],
             'handler4' => [[new TestHandler(), 'process']],
             'handler5' => [
                 function ($argument) {
@@ -55,6 +75,9 @@ class RouteSetterTraitTest extends PHPUnit_Framework_TestCase
         ];
     }
     
+    /**
+     * @codeCoverageIgnore
+     */
     public function paramSourcesProvider()
     {
         return [
@@ -72,6 +95,9 @@ class RouteSetterTraitTest extends PHPUnit_Framework_TestCase
         ];
     }
     
+    /**
+     * @codeCoverageIgnore
+     */
     public function paramHandlersProvider()
     {
         return [
@@ -81,11 +107,11 @@ class RouteSetterTraitTest extends PHPUnit_Framework_TestCase
                 }
             ]], 
             'param_handlers2' => [[
-                'setting_item' => ['TestParamHandler'],
+                'setting_item' => [TestParamHandler::class],
                 'setting_value' => [new TestParamHandler()]
             ]],
             'param_handlers3' => [[
-                'transaction' => ['TestParamHandler', 'process'],
+                'transaction' => [TestParamHandler::class, 'process'],
                 'sort_by' => [new TestParamHandler(), 'process']
             ]]
         ];

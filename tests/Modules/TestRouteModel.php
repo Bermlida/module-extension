@@ -1,7 +1,12 @@
 <?php
 
+namespace Vista\Router\Tests\Modules;
+
 use Vista\Router\Interfaces\RouteModelInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 class TestRouteModel implements RouteModelInterface
 {
     private $user_id;

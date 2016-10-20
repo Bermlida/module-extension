@@ -1,5 +1,10 @@
 <?php
 
+namespace Vista\Router\Tests\Modules;
+
+/**
+ * @codeCoverageIgnore
+ */
 class TestParamHandler
 {
     public function __invoke($param)

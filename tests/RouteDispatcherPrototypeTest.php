@@ -1,10 +1,14 @@
 <?php
 
+use Phly\Http\ServerRequest;
 use Vista\Router\Route;
 use Vista\Router\RouteCollection;
+use Vista\Router\Tests\Modules\TestParamHandler;
 use Vista\Router\Prototypes\RouteDispatcherPrototype;
-use Phly\Http\ServerRequest;
 
+/**
+ * @coversDefaultClass \Vista\Router\Tests
+ */
 class RouteDispatcherPrototypeTest extends PHPUnit_Framework_TestCase
 {
     public function testStub()
@@ -21,7 +25,7 @@ class RouteDispatcherPrototypeTest extends PHPUnit_Framework_TestCase
     {
         extract($this->getDefaultHandleParams());
 
-        $stub->method('getClass')->willReturn('TestHandler');
+        $stub->method('getClass')->willReturn('TestDefaultHandler');
         $stub->method('getMethod')->willReturn('process');
         $stub->method('bindArguments')->willReturn([$request]);
 
@@ -50,10 +54,10 @@ class RouteDispatcherPrototypeTest extends PHPUnit_Framework_TestCase
 
     private function getDefaultHandleParams()
     {
-        $root_namespace = '\Vista\Router\Tests\Handlers\\';
+        $root_namespace = '\Vista\Router\Tests\Modules\\';
 
         $request = $this->getRequest([
-            'uri' => '/test_handler/process',
+            'uri' => '/test_default_handler/process',
             'method' => 'get',
             'query' => ['var_get' => 123456],
             'parsed_body' => ['var_post' => 987654]
@@ -75,8 +79,8 @@ class RouteDispatcherPrototypeTest extends PHPUnit_Framework_TestCase
                 ->handler(function ($user_id, $sort, $top) {
                         return compact(['user_id', 'sort', 'top']);
                     })
-                ->param_sources(['sort' => 'get', 'top' => 'post'])
-                ->param_handlers('sort', ['TestParamHandler', 'processTimesTen'])
+                ->param_sources(['user_id' => 'uri', 'sort' => 'get', 'top' => 'post'])
+                ->param_handlers('sort', [TestParamHandler::class, 'processTimesTen'])
                 ->param_handlers('top', [new TestParamHandler(), 'processDividedTen'])
         ]);
 

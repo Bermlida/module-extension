@@ -1,19 +1,20 @@
 <?php
 
-namespace Vista\Router\Tests\Handlers;
+namespace Vista\Router\Tests\Modules;
 
-use TestRouteModel;
 use Phly\Http\ServerRequest;
-use Vista\Router\Interfaces\RouteModelInterface;
 
-class TestHandler
+/**
+ * @codeCoverageIgnore
+ */
+class TestDefaultHandler
 {
     public function process(ServerRequest $request)
     {
         return $request;
     }
 
-    public function putProcessWithModel(TestRouteModel $model)
+    public function putProcessWithModel(TestDefaultRouteModel $model)
     {
         return [
             $model->item_name,

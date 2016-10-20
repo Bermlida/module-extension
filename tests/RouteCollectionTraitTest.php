@@ -1,8 +1,11 @@
 <?php
 
-use Vista\Router\Traits\RouteCollectionTrait;
 use Vista\Router\Route;
+use Vista\Router\Traits\RouteCollectionTrait;
 
+/**
+ * @coversDefaultClass \Vista\Router\Tests
+ */
 class RouteCollectionTraitTest extends PHPUnit_Framework_TestCase
 {
     private $route;

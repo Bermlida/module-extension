@@ -1,5 +1,10 @@
 <?php
 
+namespace Vista\Router\Tests\Modules;
+
+/**
+ * @codeCoverageIgnore
+ */
 class TestHandler
 {
     public function __invoke($user, $item_name, $item_property, $sort, $top)

@@ -1,9 +1,14 @@
 <?php
+// namespace Vista\Router\Tests;
 
 use Vista\Router\Router;
 use Vista\Router\RouteCollection;
 use Vista\Router\RouteDispatcher;
+use \PHPUnit_Framework_TestCase;
 
+/**
+ * @coversDefaultClass \Vista\Router\Tests
+ */
 class RouterTest extends PHPUnit_Framework_TestCase
 {
     public function testRouter()
