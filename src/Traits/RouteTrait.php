@@ -7,8 +7,6 @@ use Psr\Http\Message\ServerRequestInterface;
 trait RouteTrait
 {
     abstract protected function resolveHandler($handler);
-
-    abstract protected function resolveUriSource(ServerRequestInterface $request);
     
     abstract protected function resolveSources(ServerRequestInterface $request);
 
@@ -36,19 +34,18 @@ trait RouteTrait
     public function executeHandler(ServerRequestInterface $request)
     {
         $handler = $this->resolveHandler($this->handler);
-        
-        if (empty($this->param_sources)) {
-            $params = $this->resolveUriSource($request);
-            $params = empty($params) ? ['request' => $request] : $params;
-        } else {
-            $params = $this->resolveSources($request);
-        }
 
-        if (!empty($this->param_handlers)) {
-            $params = $this->handleParams($params);
+        if (!empty($this->param_sources)) {
+            $params = $this->resolveSources($request);
+            if (!empty($this->param_handlers)) {
+                $params = $this->handleParams($params);
+            }
+
+            $arguments = $this->bindArguments($params);
+        } else {
+            $arguments = [];
         }
         
-        $arguments = $this->bindArguments($params);
         return $this->callHandler($handler, $arguments);
     }
 }
