@@ -1,0 +1,10 @@
+<phpunit bootstrap="vendor/autoload.php">
+    <logging>
+        <log type="coverage-html" target="reports"></log>
+    </logging>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory>tests</directory>
+        </whitelist>
+    </filter>
+</phpunit>
