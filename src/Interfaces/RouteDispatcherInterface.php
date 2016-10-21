@@ -2,8 +2,8 @@
 
 namespace Vista\Router\Interfaces;
 
-use Vista\Router\Interfaces\RouteCollection;
 use Psr\Http\Message\ServerRequestInterface;
+use Vista\Router\Interfaces\RouteCollection;
 
 interface RouteDispatcherInterface
 {

@@ -1,7 +1,7 @@
 <?php
 
-use Vista\Router\RouteDispatcher;
 use Phly\Http\ServerRequest;
+use Vista\Router\RouteDispatcher;
 
 /**
  * @coversDefaultClass \Vista\Router\Tests

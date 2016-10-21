@@ -4,12 +4,12 @@ namespace Vista\Router;
 
 use ReflectionMethod;
 use ReflectionFunction;
+use Psr\Http\Message\ServerRequestInterface;
 use Vista\Router\Interfaces\RouteInterface;
 use Vista\Router\Interfaces\RouteModelInterface;
 use Vista\Router\Traits\RouteSetterTrait;
 use Vista\Router\Traits\RouteGetterTrait;
 use Vista\Router\Traits\RouteTrait;
-use Psr\Http\Message\ServerRequestInterface;
 
 class Route implements RouteInterface
 {

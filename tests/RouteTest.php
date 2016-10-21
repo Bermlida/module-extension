@@ -1,10 +1,10 @@
 <?php
 
+use Phly\Http\ServerRequest;
 use Vista\Router\Route;
 use Vista\Router\Tests\Modules\TestHandler;
 use Vista\Router\Tests\Modules\TestRouteModel;
 use Vista\Router\Tests\Modules\TestParamHandler;
-use Phly\Http\ServerRequest;
 
 /**
  * @coversDefaultClass \Vista\Router\Tests

@@ -104,7 +104,7 @@ abstract class RouteDispatcherPrototype implements RouteDispatcherInterface
         foreach ($this->rules as $rule) {
             $judge_uri = $rule->matchUri($request);
             $judge_method = $rule->matchMethod($request);
-
+            
             if ($judge_uri && $judge_method) {
                 $this->executed = true;
                 $this->result = $rule->executeHandler($request);

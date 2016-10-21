@@ -3,9 +3,9 @@
 namespace Vista\Router;
 
 use RuntimeException;
+use Psr\Http\Message\ServerRequestInterface;
 use Vista\Router\Interfaces\RouteCollectionInterface;
 use Vista\Router\Interfaces\RouteDispatcherInterface;
-use Psr\Http\Message\ServerRequestInterface;
 
 class Router
 {

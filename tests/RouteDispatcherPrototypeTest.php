@@ -3,8 +3,8 @@
 use Phly\Http\ServerRequest;
 use Vista\Router\Route;
 use Vista\Router\RouteCollection;
-use Vista\Router\Tests\Modules\TestParamHandler;
 use Vista\Router\Prototypes\RouteDispatcherPrototype;
+use Vista\Router\Tests\Modules\TestParamHandler;
 
 /**
  * @coversDefaultClass \Vista\Router\Tests
