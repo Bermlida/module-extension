@@ -15,34 +15,97 @@ class Route implements RouteInterface
 {
     use RouteSetterTrait, RouteGetterTrait, RouteTrait;
 
+    /**
+     * The route name prefix.
+     *
+     * @var string
+     */
     protected $name_prefix = '';
 
+    /**
+     * The route path prefix.
+     *
+     * @var string
+     */
     protected $path_prefix = '';
 
+    /**
+     * The route name.
+     *
+     * @var string
+     */
     protected $name = '';
 
+    /**
+     * The route path.
+     *
+     * @var string
+     */
     protected $path = '';
 
+    /**
+     * The placeholder token name and its regex in route path.
+     *
+     * @var array
+     */
     protected $tokens = [];
 
+    /**
+     * The route HTTP methods.
+     *
+     * @var array
+     */
     protected $methods = [];
 
+    /**
+     * The handler deal with request if match route.
+     *
+     * @var \Closure|array
+     */
     protected $handler;
 
+    /**
+     * Specify the source of the parameter that should be preprocessed.
+     *
+     * @var array
+     */
     protected $param_sources = [];
 
+    /**
+     * Handlers for preprocessing specific parameters.
+     *
+     * @var array
+     */
     protected $param_handlers = [];
 
+    /**
+     * Judge the Http method is valid.
+     *
+     * @param string $method
+     * @return bool
+     */
     protected function judgeValidMethod(string $method)
     {
         return true;
     }
 
+    /**
+     * Judge the regex is valid.
+     *
+     * @param string $regex
+     * @return bool
+     */
     protected function judgeValidRegex(string $regex)
     {
         return true;
     }
 
+    /**
+     * Judge the source is valid.
+     *
+     * @param string $source
+     * @return bool
+     */
     protected function judgeValidSource(string $source)
     {
         switch ($source) {
@@ -57,6 +120,12 @@ class Route implements RouteInterface
         }
     }
 
+    /**
+     * Judge the handler is valid.
+     *
+     * @param mixed $handler
+     * @return bool
+     */
     protected function judgeValidHandler($handler)
     {
         if (is_array($handler)) {
@@ -68,9 +137,16 @@ class Route implements RouteInterface
         } elseif (is_callable($handler)) {
             return true;
         }
+
         return false;
     }
 
+    /**
+     * resolve the handler as an anonymous function.
+     *
+     * @param mixed $handler
+     * @return \Closure|null|mixed
+     */
     protected function resolveHandler($handler)
     {
         if (is_array($handler)) {
@@ -78,8 +154,10 @@ class Route implements RouteInterface
             $method = $handler[1] ?? "__invoke";
 
             $reflector = new ReflectionMethod($object, $method);
+
             return $reflector->getClosure($object);
         }
+
         return $handler;
     }
 
@@ -98,6 +176,7 @@ class Route implements RouteInterface
                 $params[$item] = $original_data[$source][$item];
             }
         }
+        
         return $params;
     }
 
