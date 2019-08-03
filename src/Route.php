@@ -142,7 +142,7 @@ class Route implements RouteInterface
     }
 
     /**
-     * resolve the handler as an anonymous function.
+     * Resolve the handler as an anonymous function.
      *
      * @param mixed $handler
      * @return \Closure|null|mixed
@@ -161,6 +161,12 @@ class Route implements RouteInterface
         return $handler;
     }
 
+    /**
+     * Get parameters from sources.
+     *
+     * @param ServerRequestInterface $request
+     * @return array
+     */
     protected function resolveSources(ServerRequestInterface $request)
     {
         $original_data = [
@@ -180,6 +186,12 @@ class Route implements RouteInterface
         return $params;
     }
 
+    /**
+     * Use handler to process parameters.
+     *
+     * @param array $params
+     * @return array
+     */
     protected function handleParams(array $params)
     {
         foreach ($this->param_handlers as $item => $handler) {
@@ -193,6 +205,12 @@ class Route implements RouteInterface
         return $params;
     }
 
+    /**
+     * Bind the parameter values with the same name according to the handler's parameter list.
+     *
+     * @param array $params
+     * @return array
+     */
     protected function bindArguments(array $params)
     {
         $handler = $this->resolveHandler($this->handler);
@@ -201,7 +219,8 @@ class Route implements RouteInterface
         if (!empty($parameters)) {
             if (count($parameters) == 1 && !is_null($reflector = $parameters[0]->getClass())) {
                 if ($reflector->implementsInterface(RouteModelInterface::class)) {
-                    $constructor = $reflector->getConstructor();                
+                    $constructor = $reflector->getConstructor();
+
                     if (!is_null($constructor)) {
                         foreach ($constructor->getParameters() as $key => $parameter) {
                             if (isset($params[$parameter->name])) {
@@ -209,6 +228,7 @@ class Route implements RouteInterface
                                 $arguments[$key] = $value;
                             }
                         }
+
                         $arguments = [$reflector->newInstanceArgs(($arguments ?? []))];
                     }
                 } else {
@@ -229,6 +249,13 @@ class Route implements RouteInterface
         return $arguments ?? [];
     }
 
+    /**
+     * Call handler.
+     *
+     * @param Callable $handler
+     * @param array $arguments
+     * @return mixed
+     */
     protected function callHandler(Callable $handler, array $arguments)
     {
         switch (count($arguments)) {
@@ -249,6 +276,12 @@ class Route implements RouteInterface
         }
     }
 
+    /**
+     * Resolve the uri source to get the parameters.
+     *
+     * @param ServerRequestInterface $request
+     * @return array
+     */
     protected function resolveUriSource(ServerRequestInterface $request)
     {
         $uri = $request->getServerParams()['REQUEST_URI'];
@@ -261,6 +294,7 @@ class Route implements RouteInterface
             unset($value_matches[0]);
             return array_combine($key_matches[1], $value_matches);
         }
+
         return [];
     }
 }
