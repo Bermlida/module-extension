@@ -7,6 +7,12 @@ use Vista\Router\Interfaces\RouteInterface;
 
 trait RouteCollectionTrait
 {
+    /**
+     * Set routes.
+     *
+     * @param array $routes
+     * @return void
+     */
     public function setRoutes(array $routes)
     {
         $this->routes = [];
@@ -14,16 +20,32 @@ trait RouteCollectionTrait
         array_walk($routes, [$this, "setRoute"]);
     }
 
+    /**
+     * Get routes.
+     *
+     * @return array
+     */
     public function getRoutes()
     {
         return $this->routes;
     }
 
+    /**
+     * Remove routes.
+     *
+     * @return void
+     */
     public function removeRoutes()
     {
         $this->routes = [];
     }
-    
+
+    /**
+     * Set route to the routes.
+     *
+     * @param RouteInterface $route
+     * @return void
+     */
     public function setRoute(RouteInterface $route)
     {
         $name_is_empty = empty($full_name = $route->full_name);
@@ -48,6 +70,13 @@ trait RouteCollectionTrait
 */
     }
 
+    /**
+     * Get route for the name(or include methods).
+     *
+     * @param string $name
+     * @param mixed|null $methods
+     * @return RouteInterface|null
+     */
     public function getRoute(string $name, $methods = null)
     {
         if (is_string($methods) || is_array($methods)) {
@@ -57,9 +86,17 @@ trait RouteCollectionTrait
         } elseif (isset($this->routes[$name])) {    
             return $this->routes[$name];
         }
+
         return null;
     }
 
+    /**
+     * Remove route for the name(or include methods).
+     *
+     * @param string $name
+     * @param mixed|null $methods
+     * @return void
+     */
     public function removeRoute(string $name, $methods = null)
     {
         if (is_string($methods) || is_array($methods)) {
@@ -75,6 +112,13 @@ trait RouteCollectionTrait
         }
     }
 
+    /**
+     * Search route for the path and methods.
+     *
+     * @param string $path
+     * @param mixed $methods
+     * @return int
+     */
     public function searchRoute(string $path, $methods)
     {
         if (is_string($methods) || is_array($methods)) {
@@ -90,6 +134,7 @@ trait RouteCollectionTrait
                 }
             }
         }
+
         return -1;
     }
 }
