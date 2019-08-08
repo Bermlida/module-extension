@@ -6,14 +6,45 @@ use Psr\Http\Message\ServerRequestInterface;
 
 trait RouteTrait
 {
+    /**
+     * Resolve the handler as an anonymous function.
+     *
+     * @param mixed $handler
+     * @return \Closure|null|mixed
+     */
     abstract protected function resolveHandler($handler);
     
+    /**
+     * Get parameters from sources.
+     *
+     * @param ServerRequestInterface $request
+     * @return array
+     */
     abstract protected function resolveSources(ServerRequestInterface $request);
 
+    /**
+     * Use handler to process parameters.
+     *
+     * @param array $params
+     * @return array
+     */
     abstract protected function handleParams(array $params);
 
+    /**
+     * Bind the parameter values with the same name according to the handler's parameter list.
+     *
+     * @param array $params
+     * @return array
+     */
     abstract protected function bindArguments(array $params);
 
+    /**
+     * Call handler.
+     *
+     * @param Callable $handler
+     * @param array $arguments
+     * @return mixed
+     */
     abstract protected function callHandler(callable $handler, array $arguments);
 
     public function matchUri(ServerRequestInterface $request)
