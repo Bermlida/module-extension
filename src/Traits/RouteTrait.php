@@ -47,6 +47,12 @@ trait RouteTrait
      */
     abstract protected function callHandler(callable $handler, array $arguments);
 
+    /**
+     * Compare the route path with the requested uri.
+     *
+     * @param ServerRequestInterface $request
+     * @return bool
+     */
     public function matchUri(ServerRequestInterface $request)
     {   
         $uri = $request->getServerParams()['REQUEST_URI'];
@@ -55,6 +61,12 @@ trait RouteTrait
         return preg_match('/' . $this->full_regex . '/', $uri_path) === 1;
     }
 
+    /**
+     * Compare route allowed http method with requested http method.
+     *
+     * @param ServerRequestInterface $request
+     * @return bool
+     */
     public function matchMethod(ServerRequestInterface $request)
     {
         $request_method = $request->getServerParams()['REQUEST_METHOD'];
@@ -62,12 +74,19 @@ trait RouteTrait
         return in_array($request_method, $this->methods);
     }
 
+    /**
+     * Pass in parameters and execute the handler.
+     *
+     * @param ServerRequestInterface $request
+     * @return mixed
+     */
     public function executeHandler(ServerRequestInterface $request)
     {   
         $handler = $this->resolveHandler($this->handler);
         
         if (!empty($this->param_sources)) {
             $params = $this->resolveSources($request);
+
             if (!empty($this->param_handlers)) {
                 $params = $this->handleParams($params);
             }
