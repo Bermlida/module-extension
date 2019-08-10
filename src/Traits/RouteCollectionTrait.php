@@ -43,7 +43,7 @@ trait RouteCollectionTrait
     /**
      * Set route to the routes.
      *
-     * @param RouteInterface $route
+     * @param \Vista\Router\Interfaces\RouteInterface $route
      * @return void
      */
     public function setRoute(RouteInterface $route)

@@ -96,7 +96,7 @@ trait RouteSetterTrait
      * @param string|array|mixed $tokens
      * @param mixed|null $regex
      * @return $this
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     protected function setTokens($tokens, $regex = null)
     {
@@ -121,7 +121,7 @@ trait RouteSetterTrait
      *
      * @param string|array|mixed $methods
      * @return $this
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     protected function setMethods($methods)
     {
@@ -148,7 +148,7 @@ trait RouteSetterTrait
      *
      * @param mixed $handler
      * @return $this
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     protected function setHandler($handler)
     {
@@ -167,7 +167,7 @@ trait RouteSetterTrait
      * @param string|array|mixed $items
      * @param mixed|null $source
      * @return $this
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     protected function setParamSources($items, $source = null)
     {
@@ -194,7 +194,7 @@ trait RouteSetterTrait
      * @param string|array|mixed $items
      * @param mixed|null $handler
      * @return $this
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     protected function setParamHandlers($items, $handler = null)
     {
@@ -221,6 +221,7 @@ trait RouteSetterTrait
      * @param string $name
      * @param array $arguments
      * @return mixed
+     * @throws \RuntimeException
      */
     public function __call($name, $arguments)
     {

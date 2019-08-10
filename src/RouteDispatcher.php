@@ -9,6 +9,12 @@ use Vista\Router\Prototypes\RouteDispatcherPrototype;
 
 class RouteDispatcher extends RouteDispatcherPrototype
 {
+    /**
+     * Parse the uri to get the handler's class.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @return string
+     */
     protected function getClass(ServerRequestInterface $request)
     {
         $uri = $request->getServerParams()['REQUEST_URI'];
@@ -21,6 +27,12 @@ class RouteDispatcher extends RouteDispatcherPrototype
         return implode('\\', $segments);
     }
     
+    /**
+     * Parse the uri to get the handler's method.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @return string
+     */
     protected function getMethod(ServerRequestInterface $request)
     {
         $uri = $request->getServerParams()['REQUEST_URI'];
@@ -33,6 +45,13 @@ class RouteDispatcher extends RouteDispatcherPrototype
         return strtolower($request_method) . $this->handleSegment($segment);
     }
 
+    /**
+     * According to the method of the handler, the required parameters are bound from the request content.
+     *
+     * @param array $handler
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @return array
+     */
     protected function bindArguments(array $handler, ServerRequestInterface $request)
     {
         $class_method = new ReflectionMethod($handler[0], $handler[1]);
@@ -44,6 +63,7 @@ class RouteDispatcher extends RouteDispatcherPrototype
             if (!is_null($reflector = $parameters[0]->getClass())) {
                 if ($reflector->implementsInterface(RouteModelInterface::class)) {
                     $constructor = $reflector->getConstructor();
+
                     if (!is_null($constructor)) {
                         foreach ($constructor->getParameters() as $key => $parameter) {
                             if (isset($params[$parameter->name])) {
@@ -51,6 +71,7 @@ class RouteDispatcher extends RouteDispatcherPrototype
                                 $arguments[$key] = $value;
                             }
                         }
+
                         $arguments = [$reflector->newInstanceArgs(($arguments ?? []))];
                     }
                 } elseif ($reflector->implementsInterface(ServerRequestInterface::class)) {
@@ -69,6 +90,12 @@ class RouteDispatcher extends RouteDispatcherPrototype
         return $arguments ?? [];
     }
     
+    /**
+     * Get the parameter content according to the http method of the request.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @return array
+     */
     protected function getSourceParams(ServerRequestInterface $request)
     {
         $request_method = $request->getServerParams()['REQUEST_METHOD'];
@@ -93,12 +120,19 @@ class RouteDispatcher extends RouteDispatcherPrototype
         }
     }
 
+    /**
+     * Handle the uri segment to help get the handler's class and method.
+     *
+     * @param string &$segment
+     * @return string
+     */
     protected function handleSegment(string &$segment)
     {
         if (!(strpos($segment, '_') === false)) {
             $segment = implode(array_map(
                 function ($segment) {
                     $segment = ucfirst(strtolower($segment));
+
                     return $segment;
                 },
                 explode('_', $segment)

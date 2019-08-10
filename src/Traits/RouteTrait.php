@@ -50,7 +50,7 @@ trait RouteTrait
     /**
      * Compare the route path with the requested uri.
      *
-     * @param ServerRequestInterface $request
+     * @param \Psr\Http\Message\ServerRequestInterface $request
      * @return bool
      */
     public function matchUri(ServerRequestInterface $request)
@@ -64,7 +64,7 @@ trait RouteTrait
     /**
      * Compare route allowed http method with requested http method.
      *
-     * @param ServerRequestInterface $request
+     * @param \Psr\Http\Message\ServerRequestInterface $request
      * @return bool
      */
     public function matchMethod(ServerRequestInterface $request)
@@ -77,7 +77,7 @@ trait RouteTrait
     /**
      * Pass in parameters and execute the handler.
      *
-     * @param ServerRequestInterface $request
+     * @param \Psr\Http\Message\ServerRequestInterface $request
      * @return mixed
      */
     public function executeHandler(ServerRequestInterface $request)

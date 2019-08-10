@@ -164,7 +164,7 @@ class Route implements RouteInterface
     /**
      * Get parameters from sources.
      *
-     * @param ServerRequestInterface $request
+     * @param \Psr\Http\Message\ServerRequestInterface $request
      * @return array
      */
     protected function resolveSources(ServerRequestInterface $request)
@@ -279,7 +279,7 @@ class Route implements RouteInterface
     /**
      * Resolve the uri source to get the parameters.
      *
-     * @param ServerRequestInterface $request
+     * @param \Psr\Http\Message\ServerRequestInterface $request
      * @return array
      */
     protected function resolveUriSource(ServerRequestInterface $request)
